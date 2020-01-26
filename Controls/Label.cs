@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -141,11 +141,11 @@ namespace Squid
                 return;
             }
 
-            if (from == false && to == true)
+            if (!from && to)
             {
                 _text = TranslateText(_originalText);
             }
-            else if (from == true && to == false)
+            else if (from && !to)
             {
                 _text = _originalText;
             }

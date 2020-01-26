@@ -280,11 +280,11 @@ namespace Squid
                 return;
             }
 
-            if (from == false && to == true)
+            if (!from && to)
             {
                 _tooltip = TranslateText(_originalTooltip);
             }
-            else if (from == true && to == false)
+            else if (from && !to)
             {
                 _tooltip = _originalTooltip;
             }

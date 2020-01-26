@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Reflection;
-using System.Collections;
-using System.ComponentModel;
 
 namespace Squid
 {
@@ -25,7 +22,7 @@ namespace Squid
         /// The cache
         /// </summary>
         private static Dictionary<Type, Dictionary<Type, object>> Cache = new Dictionary<Type, Dictionary<Type, object>>();
-        
+
         /// <summary>
         /// The properties
         /// </summary>
@@ -100,7 +97,10 @@ namespace Squid
         public static PropertyInfo[] GetProperties(Type type)
         {
             if (!Properties.ContainsKey(type))
+            {
                 Properties.Add(type, type.GetProperties());
+            }
+
             return Properties[type];
         }
 
@@ -122,7 +122,10 @@ namespace Squid
         public static FieldInfo[] GetFields(Type type)
         {
             if (!Fields.ContainsKey(type))
+            {
                 Fields.Add(type, type.GetFields());
+            }
+
             return Fields[type];
         }
 
@@ -134,10 +137,12 @@ namespace Squid
         /// <returns>System.Object.</returns>
         public static object GetFieldValue(object obj, string name)
         {
-            FieldInfo field = obj.GetType().GetField(name);
+            var field = obj.GetType().GetField(name);
 
             if (field != null)
+            {
                 return field.GetValue(obj);
+            }
 
             return null;
         }
@@ -149,12 +154,16 @@ namespace Squid
         public static void RegisterAssemblies(params Assembly[] assemblies)
         {
             if (assemblies == null)
+            {
                 return;
+            }
 
-            foreach (Assembly assembly in assemblies)
+            foreach (var assembly in assemblies)
             {
                 if (!Assemblies.ContainsKey(assembly.FullName))
+                {
                     Assemblies.Add(assembly.FullName, assembly);
+                }
             }
         }
 
@@ -166,9 +175,12 @@ namespace Squid
         /// <returns>``0.</returns>
         public static T GetAttribute<T>(Type type) where T : Attribute
         {
-            object[] atts = type.GetCustomAttributes(typeof(T), false);
+            var atts = type.GetCustomAttributes(typeof(T), false);
             if (atts.Length > 0)
+            {
                 return (T)atts[0];
+            }
+
             return null;
         }
 
@@ -181,9 +193,12 @@ namespace Squid
         /// <returns>``0.</returns>
         public static T GetAttribute<T>(Type type, bool inherit) where T : Attribute
         {
-            object[] atts = type.GetCustomAttributes(typeof(T), inherit);
+            var atts = type.GetCustomAttributes(typeof(T), inherit);
             if (atts.Length > 0)
+            {
                 return (T)atts[0];
+            }
+
             return null;
         }
 
@@ -195,14 +210,20 @@ namespace Squid
         public static Type GetType(string name)
         {
             Type result = null;
-            Assembly main = Assembly.GetAssembly(typeof(Squid.Control));
+            var main = Assembly.GetAssembly(typeof(Squid.Control));
             result = main.GetType(name);
-            if (result != null) return result;
+            if (result != null)
+            {
+                return result;
+            }
 
-            foreach (Assembly assembly in Assemblies.Values)
+            foreach (var assembly in Assemblies.Values)
             {
                 result = assembly.GetType(name);
-                if (result != null) return result;
+                if (result != null)
+                {
+                    return result;
+                }
             }
 
             return null;
@@ -216,26 +237,34 @@ namespace Squid
         public static List<Type> GetTypes(Type required)
         {
             if (TypeCache.ContainsKey(required))
-                return TypeCache[required];
-
-            List<Type> types = new List<Type>();
-            List<Type> result = new List<Type>();
-
-            Assembly main = Assembly.GetAssembly(required);
-            types.AddRange(main.GetTypes());
-
-            foreach (Assembly assembly in Assemblies.Values)
             {
-                if (main.FullName != assembly.FullName)
-                    types.AddRange(assembly.GetTypes());
+                return TypeCache[required];
             }
 
-            foreach (Type type in types)
+            var types = new List<Type>();
+            var result = new List<Type>();
+
+            var main = Assembly.GetAssembly(required);
+            types.AddRange(main.GetTypes());
+
+            foreach (var assembly in Assemblies.Values)
+            {
+                if (main.FullName != assembly.FullName)
+                {
+                    types.AddRange(assembly.GetTypes());
+                }
+            }
+
+            foreach (var type in types)
             {
                 if (required.IsInterface && required.IsAssignableFrom(type))
+                {
                     result.Add(type);
+                }
                 else if (type.IsSubclassOf(required))
+                {
                     result.Add(type);
+                }
             }
 
             TypeCache.Add(required, result);

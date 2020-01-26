@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Squid
+﻿namespace Squid
 {
     /// <summary>
     /// Struct KeyData
@@ -32,6 +28,6 @@ namespace Squid
         /// Gets the key.
         /// </summary>
         /// <value>The key.</value>
-        public Keys Key { get { return (Keys)Scancode; } }
+        public Keys Key => (Keys)Scancode;
     }
 }

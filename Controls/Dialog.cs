@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Squid
+﻿namespace Squid
 {
     /// <summary>
     /// A Dialog window
@@ -29,18 +25,20 @@ namespace Squid
         /// <value>The result.</value>
         protected DialogResult Result
         {
-            get
-            {
-                return _result;
-            }
+            get => _result;
             set
             {
-                if (_result == value) return;
+                if (_result == value)
+                {
+                    return;
+                }
 
                 _result = value;
 
                 if (OnResult != null)
+                {
                     OnResult(this, _result);
+                }
             }
         }
 

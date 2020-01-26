@@ -1,6 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Squid
 {
@@ -58,16 +56,19 @@ namespace Squid
         /// <param name="y">The y.</param>
         public virtual void Draw(int x, int y)
         {
-            int texture = Gui.Renderer.GetTexture(Texture);
-            if (texture < 0) return;
+            var texture = Gui.Renderer.GetTexture(Texture);
+            if (texture < 0)
+            {
+                return;
+            }
 
             if (TextureRect.IsEmpty())
             {
-                Point texsize = Gui.Renderer.GetTextureSize(texture);
+                var texsize = Gui.Renderer.GetTextureSize(texture);
                 TextureRect = new Rectangle(Point.Zero, texsize);
             }
 
-            Point p = new Point(x, y) - HotSpot;
+            var p = new Point(x, y) - HotSpot;
             Gui.Renderer.DrawTexture(texture, p.x, p.y, Size.x, Size.y, TextureRect, Color);
         }
     }
@@ -116,15 +117,18 @@ namespace Squid
         /// <param name="y">The y.</param>
         public override void Draw(int x, int y)
         {
-            int index = Gui.Renderer.GetTexture(Texture);
-            if (index < 0) return;
+            var index = Gui.Renderer.GetTexture(Texture);
+            if (index < 0)
+            {
+                return;
+            }
 
-            Point p = new Point(x, y) - HotSpot;
+            var p = new Point(x, y) - HotSpot;
 
             flip.Speed = Speed;
             flip.Rows = Rows;
             flip.Columns = Columns;
-            flip.Draw(index, p.x, p.y, Size.x, Size.y, Color);       
+            flip.Draw(index, p.x, p.y, Size.x, Size.y, Color);
         }
     }
 }

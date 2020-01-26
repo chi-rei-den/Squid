@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Squid
+﻿namespace Squid
 {
     /// <summary>
     /// A ScrollBar.Can be used vertically and horizontally.
@@ -45,43 +41,43 @@ namespace Squid
         /// Gets or sets a value indicating whether this <see cref="ScrollBar"/> is ease.
         /// </summary>
         /// <value><c>true</c> if ease; otherwise, <c>false</c>.</value>
-        public bool Ease { get { return Slider.Ease; } set { Slider.Ease = value; } }
+        public bool Ease { get => Slider.Ease; set => Slider.Ease = value; }
 
         /// <summary>
         /// Gets the eased value.
         /// </summary>
         /// <value>The eased value.</value>
-        public float EasedValue { get { return Slider.EasedValue; } }
+        public float EasedValue => Slider.EasedValue;
 
         /// <summary>
         /// Gets or sets the value.
         /// </summary>
         /// <value>The value.</value>
-        public float Value { get { return Slider.Value; } set { Slider.Value = value; } }
+        public float Value { get => Slider.Value; set => Slider.Value = value; }
 
         /// <summary>
         /// Gets or sets the steps.
         /// </summary>
         /// <value>The steps.</value>
-        public float Steps { get { return Slider.Steps; } set { Slider.Steps = value; } }
+        public float Steps { get => Slider.Steps; set => Slider.Steps = value; }
 
         /// <summary>
         /// Gets or sets the scale.
         /// </summary>
         /// <value>The scale.</value>
-        public float Scale { get { return Slider.Scale; } set { Slider.Scale = value; } }
+        public float Scale { get => Slider.Scale; set => Slider.Scale = value; }
 
         /// <summary>
         /// Gets or sets a value indicating whether [auto scale].
         /// </summary>
         /// <value><c>true</c> if [auto scale]; otherwise, <c>false</c>.</value>
-        public bool AutoScale { get { return Slider.AutoScale; } set { Slider.AutoScale = value; } }
+        public bool AutoScale { get => Slider.AutoScale; set => Slider.AutoScale = value; }
 
         /// <summary>
         /// Gets or sets the mouse scroll speed.
         /// </summary>
         /// <value>The mouse scroll speed.</value>
-        public float MouseScrollSpeed { get { return _wheelScroll; } set { _wheelScroll = value < 0 ? 0 : (value > 1 ? 1 : value); } }
+        public float MouseScrollSpeed { get => _wheelScroll; set => _wheelScroll = value < 0 ? 0 : (value > 1 ? 1 : value); }
 
         /// <summary>
         /// Gets or sets the orientation.
@@ -89,7 +85,7 @@ namespace Squid
         /// <value>The orientation.</value>
         public Orientation Orientation
         {
-            get { return Slider.Orientation; }
+            get => Slider.Orientation;
             set
             {
                 Slider.Orientation = value;
@@ -121,20 +117,26 @@ namespace Squid
 
             Style = "scroll";
 
-            ButtonUp = new Button();
-            ButtonUp.Size = new Point(25, 26);
+            ButtonUp = new Button
+            {
+                Size = new Point(25, 26)
+            };
             ButtonUp.MouseDown += Btn1_MousePress;
             ButtonUp.Style = "scrollUp";
             Elements.Add(ButtonUp);
 
-            ButtonDown = new Button();
-            ButtonDown.Size = new Point(25, 26);
+            ButtonDown = new Button
+            {
+                Size = new Point(25, 26)
+            };
             ButtonDown.MouseDown += Btn2_MousePress;
             ButtonDown.Style = "scrollDown";
             Elements.Add(ButtonDown);
 
-            Slider = new Slider();
-            Slider.Dock = DockStyle.Fill;
+            Slider = new Slider
+            {
+                Dock = DockStyle.Fill
+            };
             Slider.Button.Size = new Point(20, 30);
             Slider.AutoScale = true;
             Slider.Minimum = 0;
@@ -148,39 +150,59 @@ namespace Squid
             Orientation = Orientation.Vertical;
         }
 
-        void Slider_OnValueChanged(Control sender)
+        private void Slider_OnValueChanged(Control sender)
         {
             if (ValueChanged != null)
-                ValueChanged(this);
-        }
-
-        void Btn2_MousePress(Control sender, MouseEventArgs args)
-        {
-            if (args.Button > 0) return;
-
-            if (Steps > 1)
-                Slider.Value += 1f / Slider.Steps;
-            else
             {
-                if (Orientation == Squid.Orientation.Horizontal)
-                    Slider.Value += 1f / Slider.Size.x;
-                else
-                    Slider.Value += 1f / Slider.Size.y;
+                ValueChanged(this);
             }
         }
 
-        void Btn1_MousePress(Control sender, MouseEventArgs args)
+        private void Btn2_MousePress(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
             if (Steps > 1)
-                Slider.Value -= 1f / Slider.Steps;
+            {
+                Slider.Value += 1f / Slider.Steps;
+            }
             else
             {
                 if (Orientation == Squid.Orientation.Horizontal)
-                    Slider.Value -= 1f / Slider.Size.x;
+                {
+                    Slider.Value += 1f / Slider.Size.x;
+                }
                 else
+                {
+                    Slider.Value += 1f / Slider.Size.y;
+                }
+            }
+        }
+
+        private void Btn1_MousePress(Control sender, MouseEventArgs args)
+        {
+            if (args.Button > 0)
+            {
+                return;
+            }
+
+            if (Steps > 1)
+            {
+                Slider.Value -= 1f / Slider.Steps;
+            }
+            else
+            {
+                if (Orientation == Squid.Orientation.Horizontal)
+                {
+                    Slider.Value -= 1f / Slider.Size.x;
+                }
+                else
+                {
                     Slider.Value -= 1f / Slider.Size.y;
+                }
             }
         }
 
@@ -191,9 +213,13 @@ namespace Squid
         public void Scroll(int direction)
         {
             if (direction > 0)
+            {
                 Value += MouseScrollSpeed;
+            }
             else
+            {
                 Value -= MouseScrollSpeed;
+            }
         }
     }
 }

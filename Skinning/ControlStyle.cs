@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Squid.Xml;
 
 namespace Squid
@@ -23,7 +21,7 @@ namespace Squid
         /// </summary>
         /// <value>The tag.</value>
         [Hidden, XmlIgnore]
-        public object Tag{ get; set; }
+        public object Tag { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ControlStyle"/> class.
@@ -33,7 +31,9 @@ namespace Squid
             Styles = new StyleCollection();
 
             foreach (ControlState state in Enum.GetValues(typeof(ControlState)))
+            {
                 Styles.Add(state, new Style());
+            }
         }
 
         /// <summary>
@@ -45,7 +45,9 @@ namespace Squid
             Styles = new StyleCollection();
 
             foreach (ControlState state in Enum.GetValues(typeof(ControlState)))
+            {
                 Styles.Add(state, new Style(style.Styles[state]));
+            }
         }
 
         /// <summary>
@@ -57,7 +59,9 @@ namespace Squid
             Styles = new StyleCollection();
 
             foreach (ControlState state in Enum.GetValues(typeof(ControlState)))
+            {
                 Styles.Add(state, new Style(style));
+            }
         }
 
         /// <summary>
@@ -77,8 +81,10 @@ namespace Squid
         {
             Styles = new StyleCollection();
 
-            foreach (ControlState state in style.Styles.Keys)
+            foreach (var state in style.Styles.Keys)
+            {
                 Styles.Add(state, new Style(style.Styles[state]));
+            }
         }
 
         /// <summary>
@@ -90,7 +96,9 @@ namespace Squid
             Styles = new StyleCollection();
 
             foreach (ControlState state in Enum.GetValues(typeof(ControlState)))
+            {
                 Styles.Add(state, new Style(style));
+            }
         }
 
         /// <summary>
@@ -100,8 +108,8 @@ namespace Squid
         [XmlIgnore]
         public Style Default
         {
-            get { return Styles[ControlState.Default]; }
-            set { Styles[ControlState.Default] = value; }
+            get => Styles[ControlState.Default];
+            set => Styles[ControlState.Default] = value;
         }
 
         /// <summary>
@@ -111,8 +119,8 @@ namespace Squid
         [XmlIgnore]
         public Style Hot
         {
-            get { return Styles[ControlState.Hot]; }
-            set { Styles[ControlState.Hot] = value; }
+            get => Styles[ControlState.Hot];
+            set => Styles[ControlState.Hot] = value;
         }
 
         /// <summary>
@@ -122,8 +130,8 @@ namespace Squid
         [XmlIgnore]
         public Style Pressed
         {
-            get { return Styles[ControlState.Pressed]; }
-            set { Styles[ControlState.Pressed] = value; }
+            get => Styles[ControlState.Pressed];
+            set => Styles[ControlState.Pressed] = value;
         }
 
         /// <summary>
@@ -133,8 +141,8 @@ namespace Squid
         [XmlIgnore]
         public Style Disabled
         {
-            get { return Styles[ControlState.Disabled]; }
-            set { Styles[ControlState.Disabled] = value; }
+            get => Styles[ControlState.Disabled];
+            set => Styles[ControlState.Disabled] = value;
         }
 
         /// <summary>
@@ -144,8 +152,8 @@ namespace Squid
         [XmlIgnore]
         public Style Focused
         {
-            get { return Styles[ControlState.Focused]; }
-            set { Styles[ControlState.Focused] = value; }
+            get => Styles[ControlState.Focused];
+            set => Styles[ControlState.Focused] = value;
         }
 
         /// <summary>
@@ -155,8 +163,8 @@ namespace Squid
         [XmlIgnore]
         public Style Checked
         {
-            get { return Styles[ControlState.Checked]; }
-            set { Styles[ControlState.Checked] = value; }
+            get => Styles[ControlState.Checked];
+            set => Styles[ControlState.Checked] = value;
         }
 
         /// <summary>
@@ -166,8 +174,8 @@ namespace Squid
         [XmlIgnore]
         public Style CheckedHot
         {
-            get { return Styles[ControlState.CheckedHot]; }
-            set { Styles[ControlState.CheckedHot] = value; }
+            get => Styles[ControlState.CheckedHot];
+            set => Styles[ControlState.CheckedHot] = value;
         }
 
         /// <summary>
@@ -177,8 +185,8 @@ namespace Squid
         [XmlIgnore]
         public Style CheckedPressed
         {
-            get { return Styles[ControlState.CheckedPressed]; }
-            set { Styles[ControlState.CheckedPressed] = value; }
+            get => Styles[ControlState.CheckedPressed];
+            set => Styles[ControlState.CheckedPressed] = value;
         }
 
         /// <summary>
@@ -188,8 +196,8 @@ namespace Squid
         [XmlIgnore]
         public Style CheckedDisabled
         {
-            get { return Styles[ControlState.CheckedDisabled]; }
-            set { Styles[ControlState.CheckedDisabled] = value; }
+            get => Styles[ControlState.CheckedDisabled];
+            set => Styles[ControlState.CheckedDisabled] = value;
         }
 
         /// <summary>
@@ -199,8 +207,8 @@ namespace Squid
         [XmlIgnore]
         public Style CheckedFocused
         {
-            get { return Styles[ControlState.CheckedFocused]; }
-            set { Styles[ControlState.CheckedFocused] = value; }
+            get => Styles[ControlState.CheckedFocused];
+            set => Styles[ControlState.CheckedFocused] = value;
         }
 
         /// <summary>
@@ -210,8 +218,8 @@ namespace Squid
         [XmlIgnore]
         public Style Selected
         {
-            get { return Styles[ControlState.Selected]; }
-            set { Styles[ControlState.Selected] = value; }
+            get => Styles[ControlState.Selected];
+            set => Styles[ControlState.Selected] = value;
         }
 
         /// <summary>
@@ -221,8 +229,8 @@ namespace Squid
         [XmlIgnore]
         public Style SelectedHot
         {
-            get { return Styles[ControlState.SelectedHot]; }
-            set { Styles[ControlState.SelectedHot] = value; }
+            get => Styles[ControlState.SelectedHot];
+            set => Styles[ControlState.SelectedHot] = value;
         }
 
         /// <summary>
@@ -232,8 +240,8 @@ namespace Squid
         [XmlIgnore]
         public Style SelectedPressed
         {
-            get { return Styles[ControlState.SelectedPressed]; }
-            set { Styles[ControlState.SelectedPressed] = value; }
+            get => Styles[ControlState.SelectedPressed];
+            set => Styles[ControlState.SelectedPressed] = value;
         }
 
         /// <summary>
@@ -243,8 +251,8 @@ namespace Squid
         [XmlIgnore]
         public Style SelectedDisabled
         {
-            get { return Styles[ControlState.SelectedDisabled]; }
-            set { Styles[ControlState.SelectedDisabled] = value; }
+            get => Styles[ControlState.SelectedDisabled];
+            set => Styles[ControlState.SelectedDisabled] = value;
         }
 
         /// <summary>
@@ -254,8 +262,8 @@ namespace Squid
         [XmlIgnore]
         public Style SelectedFocused
         {
-            get { return Styles[ControlState.SelectedFocused]; }
-            set { Styles[ControlState.SelectedFocused] = value; }
+            get => Styles[ControlState.SelectedFocused];
+            set => Styles[ControlState.SelectedFocused] = value;
         }
 
         /// <summary>
@@ -267,8 +275,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.Tint = value;
+                }
             }
         }
 
@@ -281,8 +291,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.TextColor = value;
+                }
             }
         }
 
@@ -295,8 +307,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.BackColor = value;
+                }
             }
         }
 
@@ -309,8 +323,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.Opacity = value;
+                }
             }
         }
 
@@ -323,8 +339,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.Font = value;
+                }
             }
         }
 
@@ -337,8 +355,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.Texture = value;
+                }
             }
         }
 
@@ -351,8 +371,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.Tiling = value;
+                }
             }
         }
 
@@ -365,8 +387,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.TextureRect = value;
+                }
             }
         }
 
@@ -379,8 +403,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.TextPadding = value;
+                }
             }
         }
 
@@ -393,8 +419,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.TextAlign = value;
+                }
             }
         }
 
@@ -407,8 +435,10 @@ namespace Squid
         {
             set
             {
-                foreach (Style state in Styles.Values)
+                foreach (var state in Styles.Values)
+                {
                     state.Grid = value;
+                }
             }
         }
     }

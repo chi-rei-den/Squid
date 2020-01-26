@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Squid
 {
@@ -20,7 +19,7 @@ namespace Squid
         {
             if (dirtyAdd)
             {
-                foreach (Control c in toAdd)
+                foreach (var c in toAdd)
                 {
                     base.Add(c);
 
@@ -35,13 +34,13 @@ namespace Squid
 
             if (dirtyRemove)
             {
-                int count = Count;
-                for (int i = count - 1; i >= 0; i--)
+                var count = Count;
+                for (var i = count - 1; i >= 0; i--)
                 {
                     if (this[i].IsRemoved)
                     {
-                        Control child = this[i];
-                        this.RemoveAt(i);
+                        var child = this[i];
+                        RemoveAt(i);
                         child.Parent = null;
                     }
                 }
@@ -61,13 +60,15 @@ namespace Squid
             BeforeItemsCleared += Items_BeforeItemsCleared;
         }
 
-        void Items_BeforeItemsCleared(object sender, EventArgs e)
+        private void Items_BeforeItemsCleared(object sender, EventArgs e)
         {
-            foreach (Control control in this)
+            foreach (var control in this)
+            {
                 control.ParentControl = null;
+            }
         }
 
-        void Items_BeforeItemRemoved(object sender, ListEventArgs<Control> e)
+        private void Items_BeforeItemRemoved(object sender, ListEventArgs<Control> e)
         {
             // item is Null or item is our parent
             if (e.Item == null || e.Item == Parent)
@@ -87,12 +88,16 @@ namespace Squid
             dirtyRemove = true;
 
             if (IsLocked)
+            {
                 e.Cancel = true;
+            }
             else
+            {
                 e.Item.ParentControl = null;
+            }
         }
 
-        void Items_BeforeItemAdded(object sender, ListEventArgs<Control> e)
+        private void Items_BeforeItemAdded(object sender, ListEventArgs<Control> e)
         {
             // item is Null or item is our parent
             if (e.Item == null || e.Item == Parent)
@@ -148,7 +153,7 @@ namespace Squid
         {
             if (dirtyAdd)
             {
-                foreach (Control c in toAdd)
+                foreach (var c in toAdd)
                 {
                     base.Add(c);
 
@@ -163,13 +168,13 @@ namespace Squid
 
             if (dirtyRemove)
             {
-                int count = Count;
-                for (int i = count - 1; i >= 0; i--)
+                var count = Count;
+                for (var i = count - 1; i >= 0; i--)
                 {
                     if (this[i].IsRemoved)
                     {
-                        Control child = this[i];
-                        this.RemoveAt(i);
+                        var child = this[i];
+                        RemoveAt(i);
                         child.ParentControl = null;
                     }
                 }
@@ -189,13 +194,15 @@ namespace Squid
             BeforeItemsCleared += Items_BeforeItemsCleared;
         }
 
-        void Items_BeforeItemsCleared(object sender, EventArgs e)
+        private void Items_BeforeItemsCleared(object sender, EventArgs e)
         {
-            foreach (Control control in this)
+            foreach (var control in this)
+            {
                 control.ParentControl = null;
+            }
         }
 
-        void Items_BeforeItemRemoved(object sender, ListEventArgs<Control> e)
+        private void Items_BeforeItemRemoved(object sender, ListEventArgs<Control> e)
         {
             // item is Null or item is our parent
             if (e.Item == null || e.Item == Parent)
@@ -215,12 +222,16 @@ namespace Squid
             dirtyRemove = true;
 
             if (IsLocked)
+            {
                 e.Cancel = true;
+            }
             else
+            {
                 e.Item.ParentControl = null;
+            }
         }
 
-        void Items_BeforeItemAdded(object sender, ListEventArgs<Control> e)
+        private void Items_BeforeItemAdded(object sender, ListEventArgs<Control> e)
         {
             // item is Null or item is our parent
             if (e.Item == null || e.Item == Parent)

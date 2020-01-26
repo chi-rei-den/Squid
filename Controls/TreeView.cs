@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 
 namespace Squid
@@ -50,21 +49,30 @@ namespace Squid
         /// <value>The selected node.</value>
         public TreeNode SelectedNode
         {
-            get { return _selectedNode; }
+            get => _selectedNode;
             set
             {
-                if (value == _selectedNode) return;
+                if (value == _selectedNode)
+                {
+                    return;
+                }
 
-                if (_selectedNode != null) 
+                if (_selectedNode != null)
+                {
                     _selectedNode.Selected = false;
+                }
 
                 _selectedNode = value;
 
-                if (_selectedNode != null) 
+                if (_selectedNode != null)
+                {
                     _selectedNode.Selected = true;
+                }
 
                 if (SelectedNodeChanged != null)
+                {
                     SelectedNodeChanged(this, _selectedNode);
+                }
             }
         }
 
@@ -88,25 +96,31 @@ namespace Squid
             Nodes.ItemRemoved += Nodes_ItemRemoved;
             Nodes.BeforeItemsCleared += Nodes_BeforeItemsCleared;
 
-            Scrollbar = new ScrollBar();
-            Scrollbar.Dock = DockStyle.Right;
-            Scrollbar.Size = new Point(25, 25);
-            Scrollbar.Orientation = Orientation.Vertical;
+            Scrollbar = new ScrollBar
+            {
+                Dock = DockStyle.Right,
+                Size = new Point(25, 25),
+                Orientation = Orientation.Vertical
+            };
             Elements.Add(Scrollbar);
 
-            ClipFrame = new Frame();
-            ClipFrame.Dock = DockStyle.Fill;
-            ClipFrame.Scissor = true;
+            ClipFrame = new Frame
+            {
+                Dock = DockStyle.Fill,
+                Scissor = true
+            };
             Elements.Add(ClipFrame);
 
-            ItemContainer = new Frame();
-            ItemContainer.AutoSize = AutoSize.Vertical;
-            ItemContainer.Parent = ClipFrame;
+            ItemContainer = new Frame
+            {
+                AutoSize = AutoSize.Vertical,
+                Parent = ClipFrame
+            };
 
             MouseWheel += TreeView_MouseWheel;
         }
 
-        void TreeView_MouseWheel(Control sender, MouseEventArgs args)
+        private void TreeView_MouseWheel(Control sender, MouseEventArgs args)
         {
             Scrollbar.Scroll(Gui.MouseScroll);
             args.Cancel = true;
@@ -125,52 +139,65 @@ namespace Squid
             }
             else
             {
-                Scrollbar.Scale = Math.Min(1, (float)Size.y / (float)ItemContainer.Size.y);
+                Scrollbar.Scale = Math.Min(1, Size.y / (float)ItemContainer.Size.y);
                 Scrollbar.Visible = true; // show scrollbar
                 ItemContainer.Position = new Point(0, (int)((ClipFrame.Size.y - ItemContainer.Size.y) * Scrollbar.EasedValue));
             }
 
             if (Scrollbar.ShowAlways)
+            {
                 Scrollbar.Visible = true;
+            }
         }
 
-        void Nodes_BeforeItemsCleared(object sender, EventArgs e)
+        private void Nodes_BeforeItemsCleared(object sender, EventArgs e)
         {
-            foreach (TreeNode node in Nodes)
+            foreach (var node in Nodes)
+            {
                 Nodes_ItemRemoved(sender, new ListEventArgs<TreeNode>(node));
+            }
         }
 
-        void Nodes_ItemRemoved(object sender, ListEventArgs<TreeNode> e)
+        private void Nodes_ItemRemoved(object sender, ListEventArgs<TreeNode> e)
         {
-            e.Item.ExpandedChanged -=Item_ExpandedChanged;
-            e.Item.SelectedChanged -=Item_SelectedChanged;
+            e.Item.ExpandedChanged -= Item_ExpandedChanged;
+            e.Item.SelectedChanged -= Item_SelectedChanged;
             e.Item.treeview = null;
 
             ItemContainer.Controls.Remove(e.Item);
 
-            foreach (TreeNode child in e.Item.Nodes)
+            foreach (var child in e.Item.Nodes)
+            {
                 Nodes_ItemRemoved(sender, new ListEventArgs<TreeNode>(child));
+            }
         }
 
-        void Item_SelectedChanged(Control sender)
+        private void Item_SelectedChanged(Control sender)
         {
-            TreeNode node = sender as TreeNode;
-            if (node == null) return;
+            var node = sender as TreeNode;
+            if (node == null)
+            {
+                return;
+            }
 
             if (node.Selected)
+            {
                 SelectedNode = node;
+            }
             else if (node == SelectedNode)
+            {
                 SelectedNode = null;
+            }
         }
 
-        void Item_ExpandedChanged(Control sender)
+        private void Item_ExpandedChanged(Control sender)
         {
-            TreeNode node = sender as TreeNode;
-           
+            var node = sender as TreeNode;
+
             if (!node.Expanded)
             {
-                List<TreeNode> nodes = FindExpandedNodes(node);
-                foreach (TreeNode child in nodes)
+                var nodes = FindExpandedNodes(node);
+                foreach (var child in nodes)
                 {
                     child.ExpandedChanged -= Item_ExpandedChanged;
                     child.SelectedChanged -= Item_SelectedChanged;
@@ -181,9 +208,9 @@ namespace Squid
             }
             else
             {
-                int i = ItemContainer.Controls.IndexOf(node) + 1;
-                List<TreeNode> nodes = FindExpandedNodes(node);
-                foreach (TreeNode child in nodes)
+                var i = ItemContainer.Controls.IndexOf(node) + 1;
+                var nodes = FindExpandedNodes(node);
+                foreach (var child in nodes)
                 {
                     child.ExpandedChanged += Item_ExpandedChanged;
                     child.SelectedChanged += Item_SelectedChanged;
@@ -195,7 +222,7 @@ namespace Squid
             }
         }
 
-        void Nodes_ItemAdded(object sender, ListEventArgs<TreeNode> e)
+        private void Nodes_ItemAdded(object sender, ListEventArgs<TreeNode> e)
         {
             e.Item.NodeDepth = 0;
             e.Item.ExpandedChanged += Item_ExpandedChanged;
@@ -205,24 +232,33 @@ namespace Squid
             ItemContainer.Controls.Add(e.Item);
         }
 
-        void item_OnSelect(object sender, EventArgs e)
+        private void item_OnSelect(object sender, EventArgs e)
         {
-            TreeNode node = sender as TreeNode;
+            var node = sender as TreeNode;
 
-            if (SelectedNode != null) SelectedNode.Selected = false;
+            if (SelectedNode != null)
+            {
+                SelectedNode.Selected = false;
+            }
+
             SelectedNode = node;
-            if (SelectedNode != null) SelectedNode.Selected = true;
+            if (SelectedNode != null)
+            {
+                SelectedNode.Selected = true;
+            }
 
             if (SelectedNodeChanged != null)
+            {
                 SelectedNodeChanged(this, SelectedNode);
+            }
         }
 
         internal void RemoveNode(TreeNode node)
         {
             ItemContainer.Controls.Remove(node);
 
-            List<TreeNode> nodes = FindExpandedNodes(node);
-            foreach (TreeNode child in nodes)
+            var nodes = FindExpandedNodes(node);
+            foreach (var child in nodes)
             {
                 child.ExpandedChanged -= Item_ExpandedChanged;
                 child.SelectedChanged -= Item_SelectedChanged;
@@ -232,14 +268,16 @@ namespace Squid
 
         private List<TreeNode> FindExpandedNodes(TreeNode parent)
         {
-            List<TreeNode> list = new List<TreeNode>();
+            var list = new List<TreeNode>();
 
-            foreach (TreeNode node in parent.Nodes)
+            foreach (var node in parent.Nodes)
             {
                 list.Add(node);
 
                 if (node.Expanded)
+                {
                     list.AddRange(FindExpandedNodes(node));
+                }
             }
 
             return list;
@@ -278,13 +316,19 @@ namespace Squid
         [DefaultValue(false)]
         public bool Selected
         {
-            get { return _selected; }
+            get => _selected;
             set
             {
-                if (value == _selected) return;
+                if (value == _selected)
+                {
+                    return;
+                }
+
                 _selected = value;
                 if (SelectedChanged != null)
+                {
                     SelectedChanged(this);
+                }
             }
         }
 
@@ -295,16 +339,22 @@ namespace Squid
         [DefaultValue(false)]
         public bool Expanded
         {
-            get { return _expanded; }
+            get => _expanded;
             set
             {
-                if (value == _expanded) return;
+                if (value == _expanded)
+                {
+                    return;
+                }
+
                 _expanded = value;
 
                 if (!_suspendEvents)
                 {
                     if (ExpandedChanged != null)
+                    {
                         ExpandedChanged(this);
+                    }
                 }
             }
         }
@@ -350,31 +400,35 @@ namespace Squid
 
             if (treeview != null && treeview.Indent != 0)
             {
-                Margin m = Margin;
+                var m = Margin;
                 Margin = new Margin(treeview.Indent * NodeDepth, m.Top, m.Right, m.Bottom);
             }
         }
 
-        void Nodes_BeforeItemsCleared(object sender, EventArgs e)
+        private void Nodes_BeforeItemsCleared(object sender, EventArgs e)
         {
-            foreach (TreeNode node in Nodes)
+            foreach (var node in Nodes)
             {
                 node.Parent = null;
 
                 if (treeview != null)
+                {
                     treeview.RemoveNode(node);
+                }
             }
         }
 
-        void Nodes_ItemRemoved(object sender, ListEventArgs<TreeNode> e)
+        private void Nodes_ItemRemoved(object sender, ListEventArgs<TreeNode> e)
         {
             if (treeview != null)
+            {
                 treeview.RemoveNode(e.Item);
+            }
 
             e.Item.Parent = null;
         }
 
-        void Nodes_ItemAdded(object sender, ListEventArgs<TreeNode> e)
+        private void Nodes_ItemAdded(object sender, ListEventArgs<TreeNode> e)
         {
             e.Item.NodeDepth = NodeDepth + 1;
             e.Item.Parent = this;
@@ -391,7 +445,9 @@ namespace Squid
         public void Remove()
         {
             if (Parent != null)
+            {
                 Parent.Nodes.Remove(this);
+            }
             else if (treeview != null)
             {
                 treeview.Nodes.Remove(this);
@@ -420,16 +476,20 @@ namespace Squid
         /// </summary>
         public TreeNodeDropDown()
         {
-            Button = new Button();
-            Button.Size = new Point(20, 20);
-            Button.Margin = new Margin(6);
-            Button.Dock = DockStyle.Left;
+            Button = new Button
+            {
+                Size = new Point(20, 20),
+                Margin = new Margin(6),
+                Dock = DockStyle.Left
+            };
             Button.MouseClick += Button_MouseClick;
             Elements.Add(Button);
 
-            DropDownButton = new DropDownButton();
-            DropDownButton.Size = new Point(20, 20);
-            DropDownButton.Dock = DockStyle.Fill;
+            DropDownButton = new DropDownButton
+            {
+                Size = new Point(20, 20),
+                Dock = DockStyle.Fill
+            };
             Elements.Add(DropDownButton);
         }
 
@@ -438,9 +498,12 @@ namespace Squid
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="args">The <see cref="MouseEventArgs"/> instance containing the event data.</param>
-        void Button_MouseClick(Control sender, MouseEventArgs args)
+        private void Button_MouseClick(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
             Expanded = !Expanded;
         }
@@ -467,16 +530,20 @@ namespace Squid
         /// </summary>
         public TreeNodeLabel()
         {
-            Button = new Button();
-            Button.Size = new Point(20, 20);
-            Button.Margin = new Margin(6);
-            Button.Dock = DockStyle.Left;
+            Button = new Button
+            {
+                Size = new Point(20, 20),
+                Margin = new Margin(6),
+                Dock = DockStyle.Left
+            };
             Button.MouseClick += Button_MouseClick;
             Elements.Add(Button);
 
-            Label = new Button();
-            Label.Size = new Point(20, 20);
-            Label.Dock = DockStyle.Fill;
+            Label = new Button
+            {
+                Size = new Point(20, 20),
+                Dock = DockStyle.Fill
+            };
             Label.MouseClick += Label_MouseClick;
             Label.NoEvents = true;
             Elements.Add(Label);
@@ -489,16 +556,22 @@ namespace Squid
         //    Label.State = State;
         //}
 
-        void Label_MouseClick(Control sender, MouseEventArgs args)
+        private void Label_MouseClick(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
             Selected = true;
         }
 
-        void Button_MouseClick(Control sender, MouseEventArgs args)
+        private void Button_MouseClick(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
             Expanded = !Expanded;
         }

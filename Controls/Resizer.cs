@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Squid
+﻿namespace Squid
 {
     /// <summary>
     /// Delegate ResizeHandler
@@ -20,7 +16,7 @@ namespace Squid
     {
         public Control Left { get; private set; }
         public Control Right { get; private set; }
-     
+
         public Control Top { get; private set; }
         public Control TopLeft { get; private set; }
         public Control TopRight { get; private set; }
@@ -39,10 +35,14 @@ namespace Squid
 
         public Margin GripSize
         {
-            get { return _grip; }
+            get => _grip;
             set
             {
-                if (_grip == value) return;
+                if (_grip == value)
+                {
+                    return;
+                }
+
                 _grip = value;
                 Adjust();
             }
@@ -53,9 +53,11 @@ namespace Squid
             NoEvents = true;
             Dock = DockStyle.Fill;
 
-            Left = new Control();
-            Left.Size = new Point(2, 2);
-            Left.Dock = DockStyle.Left;
+            Left = new Control
+            {
+                Size = new Point(2, 2),
+                Dock = DockStyle.Left
+            };
             Left.MouseDown += Grip_OnDown;
             Left.MousePress += Grip_OnPress;
             Left.MouseUp += Grip_OnUp;
@@ -63,9 +65,11 @@ namespace Squid
             Left.Cursor = CursorNames.SizeWE;
             Elements.Add(Left);
 
-            Top = new Control();
-            Top.Size = new Point(2, 2);
-            Top.Dock = DockStyle.Top;
+            Top = new Control
+            {
+                Size = new Point(2, 2),
+                Dock = DockStyle.Top
+            };
             Top.MouseDown += Grip_OnDown;
             Top.MousePress += Grip_OnPress;
             Top.MouseUp += Grip_OnUp;
@@ -73,9 +77,11 @@ namespace Squid
             Top.Cursor = CursorNames.SizeNS;
             Elements.Add(Top);
 
-            Right = new Control();
-            Right.Size = new Point(2, 2);
-            Right.Dock = DockStyle.Right;
+            Right = new Control
+            {
+                Size = new Point(2, 2),
+                Dock = DockStyle.Right
+            };
             Right.MouseDown += Grip_OnDown;
             Right.MousePress += Grip_OnPress;
             Right.MouseUp += Grip_OnUp;
@@ -83,9 +89,11 @@ namespace Squid
             Right.Cursor = CursorNames.SizeWE;
             Elements.Add(Right);
 
-            Bottom = new Control();
-            Bottom.Size = new Point(2, 2);
-            Bottom.Dock = DockStyle.Bottom;
+            Bottom = new Control
+            {
+                Size = new Point(2, 2),
+                Dock = DockStyle.Bottom
+            };
             Bottom.MouseDown += Grip_OnDown;
             Bottom.MousePress += Grip_OnPress;
             Bottom.MouseUp += Grip_OnUp;
@@ -93,9 +101,11 @@ namespace Squid
             Bottom.Cursor = CursorNames.SizeNS;
             Elements.Add(Bottom);
 
-            TopLeft = new Control();
-            TopLeft.Size = new Point(4, 4);
-            TopLeft.Position = new Point(0, 0);
+            TopLeft = new Control
+            {
+                Size = new Point(4, 4),
+                Position = new Point(0, 0)
+            };
             TopLeft.MouseDown += Grip_OnDown;
             TopLeft.MousePress += Grip_OnPress;
             TopLeft.MouseUp += Grip_OnUp;
@@ -103,10 +113,12 @@ namespace Squid
             TopLeft.Cursor = CursorNames.SizeNWSE;
             Elements.Add(TopLeft);
 
-            TopRight = new Control();
-            TopRight.Size = new Point(4, 4);
-            TopRight.Position = new Point(Size.x - 4, 0);
-            TopRight.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            TopRight = new Control
+            {
+                Size = new Point(4, 4),
+                Position = new Point(Size.x - 4, 0),
+                Anchor = AnchorStyles.Top | AnchorStyles.Right
+            };
             TopRight.MouseDown += Grip_OnDown;
             TopRight.MousePress += Grip_OnPress;
             TopRight.MouseUp += Grip_OnUp;
@@ -114,10 +126,12 @@ namespace Squid
             TopRight.Cursor = CursorNames.SizeNESW;
             Elements.Add(TopRight);
 
-            BottomLeft = new Control();
-            BottomLeft.Size = new Point(4, 4);
-            BottomLeft.Position = new Point(0, Size.y - 4);
-            BottomLeft.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            BottomLeft = new Control
+            {
+                Size = new Point(4, 4),
+                Position = new Point(0, Size.y - 4),
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Left
+            };
             BottomLeft.MouseDown += Grip_OnDown;
             BottomLeft.MousePress += Grip_OnPress;
             BottomLeft.MouseUp += Grip_OnUp;
@@ -125,10 +139,12 @@ namespace Squid
             BottomLeft.Cursor = CursorNames.SizeNESW;
             Elements.Add(BottomLeft);
 
-            BottomRight = new Control();
-            BottomRight.Size = new Point(8, 8);
-            BottomRight.Position = new Point(Size.x - 8, Size.y - 8);
-            BottomRight.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            BottomRight = new Control
+            {
+                Size = new Point(8, 8),
+                Position = new Point(Size.x - 8, Size.y - 8),
+                Anchor = AnchorStyles.Bottom | AnchorStyles.Right
+            };
             BottomRight.MouseDown += Grip_OnDown;
             BottomRight.MousePress += Grip_OnPress;
             BottomRight.MouseUp += Grip_OnUp;
@@ -159,46 +175,65 @@ namespace Squid
             BottomRight.Position = new Point(Size.x - _grip.Right, Size.y - _grip.Bottom);
         }
 
-        void Grip_OnDown(Control sender, MouseEventArgs args)
+        private void Grip_OnDown(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
             ClickedPos = Gui.MousePosition;
             OldSize = Parent.Size;
 
             if (GripDown != null)
+            {
                 GripDown(sender, args);
+            }
         }
 
-        void Grip_OnUp(Control sender, MouseEventArgs args)
+        private void Grip_OnUp(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
             if (GripUp != null)
+            {
                 GripUp(sender, args);
+            }
         }
 
-        void Grip_OnPress(Control sender, MouseEventArgs args)
+        private void Grip_OnPress(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
-            Point p = Gui.MousePosition - ClickedPos;
+            var p = Gui.MousePosition - ClickedPos;
 
-            Point position = Parent.Position;
-            Point size = Parent.Size;
+            var position = Parent.Position;
+            var size = Parent.Size;
 
-            AnchorStyles anchor = (AnchorStyles) sender.Tag;
+            var anchor = (AnchorStyles)sender.Tag;
 
             if ((anchor & AnchorStyles.Left) == AnchorStyles.Left)
+            {
                 p.x = ClickedPos.x - Gui.MousePosition.x;
-            
+            }
+
             if ((anchor & AnchorStyles.Top) == AnchorStyles.Top)
+            {
                 p.y = ClickedPos.y - Gui.MousePosition.y;
+            }
 
             Parent.ResizeTo(OldSize + p, anchor);
 
             if (Resized != null)
+            {
                 Resized(this, Parent.Size - size, Parent.Position - position);
+            }
         }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Squid.Xml;
 
@@ -51,9 +49,9 @@ namespace Squid
         /// Gets a value indicating whether this instance is link.
         /// </summary>
         /// <value><c>true</c> if this instance is link; otherwise, <c>false</c>.</value>
-        public bool IsLink { get { return !string.IsNullOrEmpty(Href); } }
+        public bool IsLink => !string.IsNullOrEmpty(Href);
 
-        public bool IsControl { get { return !string.IsNullOrEmpty(Control); } }
+        public bool IsControl => !string.IsNullOrEmpty(Control);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextElement"/> class.
@@ -114,9 +112,12 @@ namespace Squid
 
         private static string UnescapeXML(string s)
         {
-            if (string.IsNullOrEmpty(s)) return s;
+            if (string.IsNullOrEmpty(s))
+            {
+                return s;
+            }
 
-            string returnString = s;
+            var returnString = s;
             returnString = returnString.Replace("&apos;", "'");
             returnString = returnString.Replace("&quot;", "\"");
             returnString = returnString.Replace("&gt;", ">");
@@ -128,9 +129,12 @@ namespace Squid
 
         private static string EscapeXML(string s)
         {
-            if (string.IsNullOrEmpty(s)) return s;
+            if (string.IsNullOrEmpty(s))
+            {
+                return s;
+            }
 
-            string returnString = s;
+            var returnString = s;
             returnString = returnString.Replace("&", "&amp;");
             returnString = returnString.Replace("'", "&apos;");
             returnString = returnString.Replace("\"", "&quot;");
@@ -147,7 +151,10 @@ namespace Squid
         /// <returns>The HTML representation of the BBCode string</returns>
         private static string ConvertBBCodeToHTML(string str)
         {
-            if (string.IsNullOrEmpty(str)) return string.Empty;
+            if (string.IsNullOrEmpty(str))
+            {
+                return string.Empty;
+            }
 
             // format the bold tags: [b][/b]
             // becomes: <strong></strong>
@@ -162,12 +169,16 @@ namespace Squid
             str = TagIMG.Replace(str, "<img src=\"$1\" />");
 
             while (TagCTRL1.Matches(str).Count > 0)
+            {
                 str = TagCTRL1.Replace(str, "<control key=\"$1\"/>");
+            }
 
             //format the colour tags: [color=red][/color]
             // becomes: <font color="red"></font>
             while (TagColor.Matches(str).Count > 0)
+            {
                 str = TagColor.Replace(str, "<font color=\"$1\">$2</font>");
+            }
 
             //format the font tags: [font=fontName][/font]
             // becomes: <font name="fontName"></font>
@@ -182,10 +193,15 @@ namespace Squid
 
         public static List<TextElement> Parse(string text, Style style, bool enabled)
         {
-            if (string.IsNullOrEmpty(text)) return new List<TextElement>();
+            if (string.IsNullOrEmpty(text))
+            {
+                return new List<TextElement>();
+            }
 
             if (enabled)
+            {
                 text = ConvertBBCodeToHTML(text);
+            }
             else
             {
                 text = EscapeXML(text);
@@ -197,14 +213,18 @@ namespace Squid
                 text = text.Replace("&quot;n", "<br/>");
             }
 
-            TextElement element = new TextElement { Font = style.Font, Color = style.TextColor };
-            TextElement lastElement = new TextElement { Font = style.Font, Color = style.TextColor };
-            List<TextElement> result = new List<TextElement>();
+            var element = new TextElement { Font = style.Font, Color = style.TextColor };
+            var lastElement = new TextElement { Font = style.Font, Color = style.TextColor };
+            var result = new List<TextElement>();
 
             if (reader == null)
+            {
                 reader = new Xml.XmlReader(text);
+            }
             else
+            {
                 reader.New(text);
+            }
 
             while (reader.Read())
             {
@@ -249,12 +269,16 @@ namespace Squid
                                         else if (reader.Name.Equals("color"))
                                         {
 
-                                            int color = element.Color.Value;
+                                            var color = element.Color.Value;
 
                                             if (int.TryParse(reader.Value, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture, out color))
+                                            {
                                                 element.Color = color;
+                                            }
                                             else if (int.TryParse(reader.Value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out color))
+                                            {
                                                 element.Color = color;
+                                            }
                                         }
                                     }
                                 }
@@ -266,7 +290,9 @@ namespace Squid
                                     while (reader.MoveToNextAttribute())
                                     {
                                         if (reader.Name.Equals("href"))
+                                        {
                                             element.Href = reader.Value;
+                                        }
                                     }
                                 }
                                 break;

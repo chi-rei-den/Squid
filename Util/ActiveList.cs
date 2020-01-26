@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Squid
 {
@@ -63,8 +61,8 @@ namespace Squid
         [Xml.XmlIgnore]
         public new T this[int index]
         {
-            get { return base[index]; }
-            set { base[index] = value; }
+            get => base[index];
+            set => base[index] = value;
         }
 
         //
@@ -87,7 +85,7 @@ namespace Squid
         //     The System.Collections.Generic.IList<T> is read-only.
         public new void Insert(int index, T item)
         {
-            ListEventArgs<T> args = new ListEventArgs<T>(item);
+            var args = new ListEventArgs<T>(item);
 
             OnBeforeItemAdded(this, args);
 
@@ -157,7 +155,7 @@ namespace Squid
         //     The System.Collections.Generic.IList<T> is read-only.
         public new void RemoveAt(int index)
         {
-            ListEventArgs<T> args = new ListEventArgs<T>(this[index]);
+            var args = new ListEventArgs<T>(this[index]);
 
             OnBeforeItemRemoved(this, args);
 
@@ -186,7 +184,7 @@ namespace Squid
         //     The System.Collections.Generic.ICollection<T> is read-only.
         public new void Add(T item)
         {
-            ListEventArgs<T> args = new ListEventArgs<T>(item);
+            var args = new ListEventArgs<T>(item);
 
             OnBeforeItemAdded(this, args);
 
@@ -211,8 +209,10 @@ namespace Squid
         //     The System.Collections.Generic.ICollection<T> is read-only.
         public new void AddRange(IEnumerable<T> list)
         {
-            foreach (T t in list)
+            foreach (var t in list)
+            {
                 Add(t);
+            }
         }
 
         //
@@ -247,16 +247,18 @@ namespace Squid
         //     The System.Collections.Generic.ICollection<T> is read-only.
         public new bool Remove(T item)
         {
-            ListEventArgs<T> args = new ListEventArgs<T>(item);
+            var args = new ListEventArgs<T>(item);
 
             OnBeforeItemRemoved(this, args);
 
             if (!args.Cancel)
             {
-                bool happened = base.Remove(item);
+                var happened = base.Remove(item);
 
                 if (happened)
+                {
                     OnItemRemoved(this, args);
+                }
 
                 return happened;
             }
@@ -276,7 +278,9 @@ namespace Squid
         protected virtual void OnItemAdded(object sender, ListEventArgs<T> e)
         {
             if (ItemAdded != null)
+            {
                 ItemAdded(sender, e);
+            }
         }
         /// <summary>
         /// Raises before an Item is added to the list.
@@ -286,7 +290,9 @@ namespace Squid
         protected virtual void OnBeforeItemAdded(object sender, ListEventArgs<T> e)
         {
             if (BeforeItemAdded != null)
+            {
                 BeforeItemAdded(sender, e);
+            }
         }
         /// <summary>
         /// Raises when an Item is removed from the list.
@@ -296,7 +302,9 @@ namespace Squid
         protected virtual void OnItemRemoved(object sender, ListEventArgs<T> e)
         {
             if (ItemRemoved != null)
+            {
                 ItemRemoved(sender, e);
+            }
         }
         /// <summary>
         /// Raises before an Item is removed from the list.
@@ -306,7 +314,9 @@ namespace Squid
         protected virtual void OnBeforeItemRemoved(object sender, ListEventArgs<T> e)
         {
             if (BeforeItemRemoved != null)
+            {
                 BeforeItemRemoved(sender, e);
+            }
         }
         /// <summary>
         /// Raises when the Items are cleared from this list.
@@ -316,7 +326,9 @@ namespace Squid
         protected virtual void OnItemsCleared(object sender, EventArgs e)
         {
             if (ItemsCleared != null)
+            {
                 ItemsCleared(sender, e);
+            }
         }
 
         /// <summary>
@@ -327,7 +339,9 @@ namespace Squid
         protected virtual void OnBeforeItemsCleared(object sender, EventArgs e)
         {
             if (BeforeItemsCleared != null)
+            {
                 BeforeItemsCleared(sender, e);
+            }
         }
 
         /// <summary>
@@ -338,7 +352,9 @@ namespace Squid
         protected virtual void OnItemsSorted(object sender, EventArgs e)
         {
             if (ItemsSorted != null)
+            {
                 ItemsSorted(sender, e);
+            }
         }
         #endregion
 
@@ -368,7 +384,7 @@ namespace Squid
         /// <param name="item">The item.</param>
         public ListEventArgs(T item)
         {
-            this.Item = item;
+            Item = item;
         }
     }
 }

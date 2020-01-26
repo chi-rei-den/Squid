@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Squid
+﻿namespace Squid
 {
     /// <summary>
     /// A DropDownButton
@@ -53,10 +49,12 @@ namespace Squid
         /// </summary>
         public DropDownButton()
         {
-            Dropdown = new Window();
-            Dropdown.Size = new Point(100, 200);
-            Dropdown.Resizable = true;
-            Dropdown.Scissor = false;
+            Dropdown = new Window
+            {
+                Size = new Point(100, 200),
+                Resizable = true,
+                Scissor = false
+            };
 
             Align = Alignment.BottomLeft;
 
@@ -72,12 +70,18 @@ namespace Squid
         {
             if (OnOpening != null)
             {
-                SquidEventArgs args = new SquidEventArgs();
+                var args = new SquidEventArgs();
                 OnOpening(this, args);
-                if (args.Cancel) return;
+                if (args.Cancel)
+                {
+                    return;
+                }
             }
 
-            if (HotDrop && Dropdown.Controls.Count == 0) return;
+            if (HotDrop && Dropdown.Controls.Count == 0)
+            {
+                return;
+            }
 
             Dropdown.Owner = Parent;
 
@@ -98,53 +102,78 @@ namespace Squid
             IsOpen = true;
 
             if (OnOpened != null)
+            {
                 OnOpened(this, null);
+            }
         }
 
         public void Close()
         {
-            if (Desktop == null) return;
+            if (Desktop == null)
+            {
+                return;
+            }
 
             if (OnClosing != null)
             {
-                SquidEventArgs args = new SquidEventArgs();
+                var args = new SquidEventArgs();
                 OnClosing(this, args);
-                if (args.Cancel) return;
+                if (args.Cancel)
+                {
+                    return;
+                }
             }
 
             Desktop.CloseDropdowns();
             IsOpen = false;
 
             if (OnClosed != null)
+            {
                 OnClosed(this, null);
+            }
         }
 
         public override bool Contains(Control control)
         {
             if (control.IsChildOf(this))
+            {
                 return true;
+            }
 
             return control.IsChildOf(Dropdown);
         }
 
-        void Button_MouseEnter(Control sender)
+        private void Button_MouseEnter(Control sender)
         {
-            if (HotDrop) Open();
+            if (HotDrop)
+            {
+                Open();
+            }
         }
 
-        void Button_MouseDown(Control sender, MouseEventArgs args)
+        private void Button_MouseDown(Control sender, MouseEventArgs args)
         {
-            if (Dropdown.Parent == null) IsOpen = false;
+            if (Dropdown.Parent == null)
+            {
+                IsOpen = false;
+            }
         }
 
-        void Button_MouseClick(Control sender, MouseEventArgs args)
+        private void Button_MouseClick(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
             if (IsOpen)
+            {
                 Close();
+            }
             else
+            {
                 Open();
+            }
         }
     }
 }

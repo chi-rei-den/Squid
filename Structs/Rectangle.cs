@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
 using System.Globalization;
-using System.Collections;
 
 namespace Squid
 {
@@ -21,43 +21,37 @@ namespace Squid
         /// Gets or sets the left edge.
         /// </summary>
         /// <value>The left.</value>
-        public int Left { get { return _left; } set { _left = value; } }
+        public int Left { get => _left; set => _left = value; }
 
         /// <summary>
         /// Gets or sets the top edge.
         /// </summary>
         /// <value>The top.</value>
-        public int Top { get { return _top; } set { _top = value; } }
+        public int Top { get => _top; set => _top = value; }
 
         /// <summary>
         /// Gets or sets the right edge.
         /// </summary>
         /// <value>The right.</value>
-        public int Right { get { return _right; } set { _right = value; } }
+        public int Right { get => _right; set => _right = value; }
 
         /// <summary>
         /// Gets or sets the bottom edge.
         /// </summary>
         /// <value>The bottom.</value>
-        public int Bottom { get { return _bottom; } set { _bottom = value; } }
+        public int Bottom { get => _bottom; set => _bottom = value; }
 
         /// <summary>
         /// Gets the width.
         /// </summary>
         /// <value>The width.</value>
-        public int Width
-        {
-            get { return Right - Left; }
-        }
+        public int Width => Right - Left;
 
         /// <summary>
         /// Gets the height.
         /// </summary>
         /// <value>The height.</value>
-        public int Height
-        {
-            get { return Bottom - Top; }
-        }
+        public int Height => Bottom - Top;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Rectangle"/> struct.
@@ -115,12 +109,14 @@ namespace Squid
         /// <returns>Rectangle.</returns>
         public Rectangle Clip(Rectangle rect)
         {
-            Rectangle result = new Rectangle();
-            result.Left = Math.Max(Left, rect.Left);
-            result.Top = Math.Max(Top, rect.Top);
+            var result = new Rectangle
+            {
+                Left = Math.Max(Left, rect.Left),
+                Top = Math.Max(Top, rect.Top),
 
-            result.Right = Math.Min(Right, rect.Right);
-            result.Bottom = Math.Min(Bottom, rect.Bottom);
+                Right = Math.Min(Right, rect.Right),
+                Bottom = Math.Min(Bottom, rect.Bottom)
+            };
 
             return result;
         }
@@ -182,26 +178,34 @@ namespace Squid
         /// <returns>An <see cref="T:System.Object" /> that represents the converted value.</returns>
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
-            string str = value as string;
+            var str = value as string;
             if (str == null)
+            {
                 return base.ConvertFrom(context, culture, value);
+            }
 
             try
             {
                 str = str.Trim();
 
                 if (str.Length == 0)
+                {
                     return null;
+                }
 
                 if (culture == null)
+                {
                     culture = CultureInfo.CurrentCulture;
+                }
 
-                string[] strArray = str.Split(new char[] { ';', ':' });
-                int[] numArray = new int[strArray.Length];
+                var strArray = str.Split(new char[] { ';', ':' });
+                var numArray = new int[strArray.Length];
 
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(int));
-                for (int i = 0; i < numArray.Length; i++)
+                var converter = TypeDescriptor.GetConverter(typeof(int));
+                for (var i = 0; i < numArray.Length; i++)
+                {
                     numArray[i] = (int)converter.ConvertFromString(context, culture, strArray[i]);
+                }
 
                 return new Rectangle(numArray[0], numArray[1], numArray[2], numArray[3]);
             }
@@ -228,18 +232,20 @@ namespace Squid
             }
             if (value is Rectangle)
             {
-                Rectangle rect = (Rectangle)value;
+                var rect = (Rectangle)value;
 
                 if (destinationType == typeof(string))
                 {
                     if (culture == null)
+                    {
                         culture = CultureInfo.CurrentCulture;
+                    }
 
-                    string separator = "; ";
-                    TypeConverter converter = TypeDescriptor.GetConverter(typeof(int));
-                    string[] strArray = new string[4];
+                    var separator = "; ";
+                    var converter = TypeDescriptor.GetConverter(typeof(int));
+                    var strArray = new string[4];
 
-                    int num = 0;
+                    var num = 0;
                     strArray[num++] = converter.ConvertToString(context, culture, rect.Left);
                     strArray[num++] = converter.ConvertToString(context, culture, rect.Top);
                     strArray[num++] = converter.ConvertToString(context, culture, rect.Width);
@@ -269,12 +275,16 @@ namespace Squid
         public override object CreateInstance(ITypeDescriptorContext context, IDictionary propertyValues)
         {
             if (context == null)
+            {
                 throw new ArgumentNullException("context");
+            }
 
             if (propertyValues == null)
+            {
                 throw new ArgumentNullException("propertyValues");
+            }
 
-            Rectangle padding = (Rectangle)context.PropertyDescriptor.GetValue(context.Instance);
+            var padding = (Rectangle)context.PropertyDescriptor.GetValue(context.Instance);
 
             return new Margin((int)propertyValues["Left"], (int)propertyValues["Top"], (int)propertyValues["Width"], (int)propertyValues["Height"]);
         }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Squid
+﻿namespace Squid
 {
     /// <summary>
     /// A CheckBox
@@ -35,13 +31,15 @@ namespace Squid
         /// <value>The text.</value>
         public string Text
         {
-            get { return Label.Text; }
+            get => Label.Text;
             set
             {
                 _text = value;
 
-                if(Label != null)
+                if (Label != null)
+                {
                     Label.Text = value;
+                }
             }
         }
 
@@ -51,13 +49,15 @@ namespace Squid
         /// <value><c>true</c> if checked; otherwise, <c>false</c>.</value>
         public bool Checked
         {
-            get { return Button.Checked; }
+            get => Button.Checked;
             set
             {
                 _checked = value;
 
-                if(Button != null)
+                if (Button != null)
+                {
                     Button.Checked = value;
+                }
             }
         }
 
@@ -71,33 +71,39 @@ namespace Squid
 
             MouseClick += CheckBox_MouseClick;
 
-            Button = new Button();
-            Button.Dock = DockStyle.Left;
-            Button.Size = new Point(29, 30);
-            Button.CheckOnClick = true;
+            Button = new Button
+            {
+                Dock = DockStyle.Left,
+                Size = new Point(29, 30),
+                CheckOnClick = true
+            };
             Button.CheckedChanged += Button_CheckedChanged;
             Button.Style = "checkboxButton";
             Button.NoEvents = true;
             Elements.Add(Button);
 
-            Label = new Label();
-            Label.Dock = DockStyle.Fill;
-            Label.Style = "checkboxLabel";
-            Label.NoEvents = true;
+            Label = new Label
+            {
+                Dock = DockStyle.Fill,
+                Style = "checkboxLabel",
+                NoEvents = true
+            };
             Elements.Add(Label);
         }
 
-        void CheckBox_MouseClick(Control sender, MouseEventArgs args)
+        private void CheckBox_MouseClick(Control sender, MouseEventArgs args)
         {
             Button.Click(args.Button);
         }
 
-        void Button_CheckedChanged(Control sender)
+        private void Button_CheckedChanged(Control sender)
         {
             if (CheckedChanged != null)
+            {
                 CheckedChanged(this);
+            }
         }
-     
+
         protected override void OnStateChanged()
         {
             base.OnStateChanged();

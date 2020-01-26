@@ -80,19 +80,22 @@ namespace Squid
         /// <value>The value.</value>
         public float Value
         {
-            get
-            {
-                return _value;
-            }
+            get => _value;
             set
             {
-                if (_value == value) return;
+                if (_value == value)
+                {
+                    return;
+                }
+
                 _value = value;
                 _value = Math.Min(_value, Maximum);
                 _value = Math.Max(_value, Minimum);
 
                 if (ValueChanged != null)
+                {
                     ValueChanged(this);
+                }
             }
         }
 
@@ -110,8 +113,10 @@ namespace Squid
             Size = new Point(20, 100);
             Orientation = Orientation.Vertical;
 
-            Button = new Button();
-            Button.Size = new Point(20, 20);
+            Button = new Button
+            {
+                Size = new Point(20, 20)
+            };
             Button.MouseDown += Button_MouseDown;
             Button.Style = "sliderButton";
             Elements.Add(Button);
@@ -125,16 +130,23 @@ namespace Squid
             _easeScroll = value;
         }
 
-        void Slider_MouseDown(Control sender, MouseEventArgs args)
+        private void Slider_MouseDown(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
-            Point position = Gui.MousePosition - Location - Button.Size / 2;
+            var position = Gui.MousePosition - Location - Button.Size / 2;
 
             if (Orientation == Orientation.Vertical)
+            {
                 Value = Minimum + (Maximum - Minimum) * position.y / (Size.y - Button.Size.y);
+            }
             else
+            {
                 Value = Minimum + (Maximum - Minimum) * position.x / (Size.x - Button.Size.x);
+            }
 
             Snap();
         }
@@ -143,14 +155,17 @@ namespace Squid
         {
             if (Steps > 1)
             {
-                float snap = 1f / Steps;
+                var snap = 1f / Steps;
                 Value = (float)Math.Ceiling(_value / snap) * snap;
             }
         }
 
-        void Button_MouseDown(Control sender, MouseEventArgs args)
+        private void Button_MouseDown(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
             Offset = Gui.MousePosition - sender.Location;
         }
@@ -159,8 +174,11 @@ namespace Squid
         {
             base.OnUpdate();
 
-            Desktop root = Desktop;
-            if (root == null) return;
+            var root = Desktop;
+            if (root == null)
+            {
+                return;
+            }
 
             if (AutoScale)
             {
@@ -168,21 +186,25 @@ namespace Squid
 
                 if (Orientation == Orientation.Vertical)
                 {
-                    int size = Size.y;// (int)(Size.y - Button.Margin.Top - Button.Margin.Bottom);
-                    int actualSize = (int)((float)size * Scale);
+                    var size = Size.y;// (int)(Size.y - Button.Margin.Top - Button.Margin.Bottom);
+                    var actualSize = (int)(size * Scale);
 
                     if (MinHandleSize > 0 && actualSize < MinHandleSize)
-                        Scale = (float)MinHandleSize / (float)size;
-                    
+                    {
+                        Scale = MinHandleSize / (float)size;
+                    }
+
                     Button.Size = new Point(Button.Size.x, (int)(size * Scale));
                 }
                 else
                 {
-                    int size = Size.x;// (int)(Size.y - Button.Margin.Top - Button.Margin.Bottom);
-                    int actualSize = (int)((float)size * Scale);
+                    var size = Size.x;// (int)(Size.y - Button.Margin.Top - Button.Margin.Bottom);
+                    var actualSize = (int)(size * Scale);
 
                     if (MinHandleSize > 0 && actualSize < MinHandleSize)
+                    {
                         Scale = MinHandleSize / size;
+                    }
 
                     Button.Size = new Point((int)(size * Scale), Button.Size.y);
                 }
@@ -194,7 +216,7 @@ namespace Squid
             {
                 if (!(Scale >= 1 && AutoScale))
                 {
-                    Point position = Gui.MousePosition - Location;
+                    var position = Gui.MousePosition - Location;
 
                     if (Orientation == Orientation.Vertical)
                     {
@@ -226,7 +248,7 @@ namespace Squid
             {
                 Snap();
 
-                float m = _value;
+                var m = _value;
 
                 if (Ease)
                 {
@@ -238,19 +260,19 @@ namespace Squid
                     m = (_value - Minimum) / (Maximum - Minimum);
                 }
 
-                Point end = Point.Zero;
+                var end = Point.Zero;
 
                 if (Orientation == Orientation.Vertical)
                 {
-                    int size = Size.y;// (int)(Size.y - Button.Margin.Top - Button.Margin.Bottom);
-                    int y = (int)(m * (size - Button.Size.y));
+                    var size = Size.y;// (int)(Size.y - Button.Margin.Top - Button.Margin.Bottom);
+                    var y = (int)(m * (size - Button.Size.y));
                     end = new Point(Button.Position.x, y);
 
                     Button.Position = end;
                 }
                 else
                 {
-                    int x = (int)(m * (Size.x - Button.Size.x));
+                    var x = (int)(m * (Size.x - Button.Size.x));
                     end = new Point(x, Button.Position.y);
 
                     Button.Position = end;
@@ -258,9 +280,13 @@ namespace Squid
             }
 
             if (Ease)
+            {
                 EasedValue += ((_value - EasedValue) / 8f) * Math.Min(8, Gui.TimeElapsed * 0.1f);
+            }
             else
+            {
                 EasedValue = _value;
+            }
         }
     }
 }

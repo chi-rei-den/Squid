@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.InteropServices;
 
 namespace Squid
 {
@@ -23,8 +20,8 @@ namespace Squid
         /// <param name="pt">The pt.</param>
         public Point(Point pt)
         {
-            this._x = pt.x;
-            this._y = pt.y;
+            _x = pt.x;
+            _y = pt.y;
         }
 
         /// <summary>
@@ -34,8 +31,8 @@ namespace Squid
         /// <param name="y">The y.</param>
         public Point(int x, int y)
         {
-            this._x = x;
-            this._y = y;
+            _x = x;
+            _y = y;
         }
 
         /// <summary>
@@ -112,7 +109,7 @@ namespace Squid
         /// <returns>The result of the operator.</returns>
         public static Point operator *(Point a, float b)
         {
-            return new Point((int)((float)a.x * b), (int)((float)a.y * b));
+            return new Point((int)(a.x * b), (int)(a.y * b));
         }
 
         /// <summary>
@@ -123,7 +120,7 @@ namespace Squid
         /// <returns>The result of the operator.</returns>
         public static Point operator /(Point a, float b)
         {
-            return new Point((int)((float)a.x / b), (int)((float)a.y / b));
+            return new Point((int)(a.x / b), (int)(a.y / b));
         }
 
         /// <summary>
@@ -131,10 +128,7 @@ namespace Squid
         /// </summary>
         /// <value><c>true</c> if this instance is empty; otherwise, <c>false</c>.</value>
         [Browsable(false)]
-        public bool IsEmpty
-        {
-            get { return ((_x == 0) && (_y == 0)); }
-        }
+        public bool IsEmpty => ((_x == 0) && (_y == 0));
 
         /// <summary>
         /// Gets or sets the x.
@@ -142,8 +136,8 @@ namespace Squid
         /// <value>The x.</value>
         public int x
         {
-            get { return _x; }
-            set { _x = value; }
+            get => _x;
+            set => _x = value;
         }
 
         /// <summary>
@@ -152,8 +146,8 @@ namespace Squid
         /// <value>The y.</value>
         public int y
         {
-            get { return _y; }
-            set { _y = value; }
+            get => _y;
+            set => _y = value;
         }
 
         /// <summary>
@@ -164,10 +158,12 @@ namespace Squid
         public override bool Equals(object obj)
         {
             if (!(obj is Point))
+            {
                 return false;
+            }
 
-            Point size = (Point)obj;
-            return ((size._x == this._x) && (size._y == this._y));
+            var size = (Point)obj;
+            return ((size._x == _x) && (size._y == _y));
         }
 
         /// <summary>
@@ -176,7 +172,7 @@ namespace Squid
         /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public override int GetHashCode()
         {
-            return (this._x ^ this._y);
+            return (_x ^ _y);
         }
 
         /// <summary>
@@ -197,8 +193,8 @@ namespace Squid
         /// <returns>Point.</returns>
         public static Point EaseTo(Point start, Point end, float divisor)
         {
-            float x = ((float)end.x - (float)start.x) / divisor;
-            float y = ((float)end.y - (float)start.y) / divisor;
+            var x = (end.x - (float)start.x) / divisor;
+            var y = (end.y - (float)start.y) / divisor;
 
             return start + new Point((int)x, (int)y);
         }
@@ -248,25 +244,35 @@ namespace Squid
         public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
         {
             if (!(value is string))
+            {
                 return base.ConvertFrom(context, culture, value);
+            }
 
-            string str = ((string)value).Trim();
+            var str = ((string)value).Trim();
 
             if (str.Length == 0)
+            {
                 return null;
+            }
 
             if (culture == null)
+            {
                 culture = CultureInfo.CurrentCulture;
+            }
 
-            string[] arr = str.Split(new char[2] { '|', ';' }, StringSplitOptions.RemoveEmptyEntries);
-            int[] numArray = new int[arr.Length];
-            TypeConverter converter = TypeDescriptor.GetConverter(typeof(int));
+            var arr = str.Split(new char[2] { '|', ';' }, StringSplitOptions.RemoveEmptyEntries);
+            var numArray = new int[arr.Length];
+            var converter = TypeDescriptor.GetConverter(typeof(int));
 
-            for (int i = 0; i < numArray.Length; i++)
+            for (var i = 0; i < numArray.Length; i++)
+            {
                 numArray[i] = (int)converter.ConvertFromString(context, culture, arr[i]);
+            }
 
             if (numArray.Length != 2)
+            {
                 throw new ArgumentException();
+            }
 
             return new Point(numArray[0], numArray[1]);
         }
@@ -283,18 +289,22 @@ namespace Squid
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
             if (destinationType == null)
+            {
                 throw new ArgumentNullException("destinationType");
+            }
 
             if ((destinationType == typeof(string)) && (value is Point))
             {
-                Point size = (Point)value;
+                var size = (Point)value;
                 if (culture == null)
+                {
                     culture = CultureInfo.CurrentCulture;
+                }
 
-                string separator = "; ";
-                TypeConverter converter = TypeDescriptor.GetConverter(typeof(int));
-                string[] strArray = new string[2];
-                int num = 0;
+                var separator = "; ";
+                var converter = TypeDescriptor.GetConverter(typeof(int));
+                var strArray = new string[2];
+                var num = 0;
                 strArray[num++] = converter.ConvertToString(context, culture, size.x);
                 strArray[num++] = converter.ConvertToString(context, culture, size.y);
                 return string.Join(separator, strArray);

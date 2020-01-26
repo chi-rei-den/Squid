@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 using Squid.Xml;
 
@@ -93,32 +91,43 @@ namespace Squid
         [XmlIgnore]
         public ListBoxItem SelectedItem
         {
-            get { return _selectedItem; }
+            get => _selectedItem;
             set
             {
-                if (value == _selectedItem) return;
+                if (value == _selectedItem)
+                {
+                    return;
+                }
 
                 skipEvents = true;
 
                 if (_selectedItem != null)
+                {
                     _selectedItem.Selected = false;
+                }
 
                 skipEvents = false;
 
                 if (Multiselect)
+                {
                     _selected.Clear();
+                }
 
                 _selectedItem = value;
 
                 skipEvents = true;
 
                 if (_selectedItem != null)
+                {
                     _selectedItem.Selected = true;
+                }
 
                 skipEvents = false;
 
                 if (SelectedItemChanged != null)
+                {
                     SelectedItemChanged(this, _selectedItem);
+                }
             }
         }
 
@@ -127,10 +136,7 @@ namespace Squid
         /// </summary>
         /// <value>The selected items.</value>
         [XmlIgnore]
-        public ActiveList<ListBoxItem> SelectedItems
-        {
-            get { return _selected; }
-        }
+        public ActiveList<ListBoxItem> SelectedItems => _selected;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListBox"/> class.
@@ -150,18 +156,24 @@ namespace Squid
             Items.ItemRemoved += Items_ItemRemoved;
             Items.ItemsSorted += Items_ItemsSorted;
 
-            Scrollbar = new ScrollBar();
-            Scrollbar.Dock = DockStyle.Right;
-            Scrollbar.Size = new Point(25, 25);
+            Scrollbar = new ScrollBar
+            {
+                Dock = DockStyle.Right,
+                Size = new Point(25, 25)
+            };
             Elements.Add(Scrollbar);
 
-            ClipFrame = new Frame();
-            ClipFrame.Dock = DockStyle.Fill;
-            ClipFrame.Scissor = true;
+            ClipFrame = new Frame
+            {
+                Dock = DockStyle.Fill,
+                Scissor = true
+            };
             Elements.Add(ClipFrame);
 
-            ItemContainer = new Frame();
-            ItemContainer.AutoSize = AutoSize.Vertical;
+            ItemContainer = new Frame
+            {
+                AutoSize = AutoSize.Vertical
+            };
             ClipFrame.Controls.Add(ItemContainer);
 
             _selected.BeforeItemAdded += _selected_BeforeItemAdded;
@@ -172,7 +184,7 @@ namespace Squid
             MouseWheel += ListBox_MouseWheel;
         }
 
-        void ListBox_MouseWheel(Control sender, MouseEventArgs args)
+        private void ListBox_MouseWheel(Control sender, MouseEventArgs args)
         {
             if (MouseScroll)
             {
@@ -181,46 +193,63 @@ namespace Squid
             }
         }
 
-        void _selected_BeforeItemsCleared(object sender, EventArgs e)
+        private void _selected_BeforeItemsCleared(object sender, EventArgs e)
         {
             skipEvents = true;
 
-            foreach (ListBoxItem item in _selected)
+            foreach (var item in _selected)
+            {
                 item.Selected = false;
+            }
 
             if (SelectedItemsChanged != null)
+            {
                 SelectedItemsChanged(this);
+            }
 
             skipEvents = false;
         }
 
-        void _selected_BeforeItemAdded(object sender, ListEventArgs<ListBoxItem> e)
+        private void _selected_BeforeItemAdded(object sender, ListEventArgs<ListBoxItem> e)
         {
-            if (!Items.Contains(e.Item)) e.Cancel = true;
+            if (!Items.Contains(e.Item))
+            {
+                e.Cancel = true;
+            }
         }
 
-        void _selected_ItemRemoved(object sender, ListEventArgs<ListBoxItem> e)
+        private void _selected_ItemRemoved(object sender, ListEventArgs<ListBoxItem> e)
         {
-            if (e.Item == null) return;
+            if (e.Item == null)
+            {
+                return;
+            }
 
             skipEvents = true;
             e.Item.Selected = false;
             skipEvents = false;
 
             if (SelectedItemsChanged != null)
+            {
                 SelectedItemsChanged(this);
+            }
         }
 
-        void _selected_ItemAdded(object sender, ListEventArgs<ListBoxItem> e)
+        private void _selected_ItemAdded(object sender, ListEventArgs<ListBoxItem> e)
         {
-            if (e.Item == null) return;
+            if (e.Item == null)
+            {
+                return;
+            }
 
             skipEvents = true;
             e.Item.Selected = true;
             skipEvents = false;
 
             if (SelectedItemsChanged != null)
+            {
                 SelectedItemsChanged(this);
+            }
         }
 
         protected override void OnUpdate()
@@ -236,93 +265,123 @@ namespace Squid
             }
             else
             {
-                Scrollbar.Scale = Math.Min(1, (float)Size.y / (float)ItemContainer.Size.y);
+                Scrollbar.Scale = Math.Min(1, Size.y / (float)ItemContainer.Size.y);
                 Scrollbar.Visible = true; // show scrollbar
                 ItemContainer.Position = new Point(0, (int)((ClipFrame.Size.y - ItemContainer.Size.y) * Scrollbar.EasedValue));
             }
 
             if (Scrollbar.ShowAlways)
+            {
                 Scrollbar.Visible = true;
+            }
         }
 
-        void Items_BeforeItemAdded(object sender, ListEventArgs<ListBoxItem> e)
+        private void Items_BeforeItemAdded(object sender, ListEventArgs<ListBoxItem> e)
         {
-            if (Items.Contains(e.Item)) e.Cancel = true;
+            if (Items.Contains(e.Item))
+            {
+                e.Cancel = true;
+            }
         }
 
-        void Items_ItemsSorted(object sender, EventArgs e)
+        private void Items_ItemsSorted(object sender, EventArgs e)
         {
             ItemContainer.Controls.Clear();
 
-            foreach (ListBoxItem item in Items)
+            foreach (var item in Items)
+            {
                 ItemContainer.Controls.Add(item);
+            }
         }
 
-        void Items_ItemRemoved(object sender, ListEventArgs<ListBoxItem> e)
+        private void Items_ItemRemoved(object sender, ListEventArgs<ListBoxItem> e)
         {
             ItemContainer.Controls.Clear();
 
             if (e.Item.Selected)
             {
                 if (Multiselect)
+                {
                     _selected.Remove(e.Item);
+                }
                 else
+                {
                     SelectedItem = null;
+                }
             }
 
             e.Item.Selected = false;
             e.Item.MouseClick -= item_MouseClick;
             e.Item.SelectedChanged -= Item_SelectedChanged;
 
-            foreach (ListBoxItem item in Items)
+            foreach (var item in Items)
+            {
                 ItemContainer.Controls.Add(item);
+            }
         }
 
-        void Items_ItemAdded(object sender, ListEventArgs<ListBoxItem> e)
+        private void Items_ItemAdded(object sender, ListEventArgs<ListBoxItem> e)
         {
             ItemContainer.Controls.Clear();
 
             if (e.Item.Selected)
             {
                 if (Multiselect)
+                {
                     _selected.Add(e.Item);
+                }
                 else
+                {
                     SelectedItem = e.Item;
+                }
             }
 
             e.Item.MouseClick += item_MouseClick;
             e.Item.SelectedChanged += Item_SelectedChanged;
 
-            foreach (ListBoxItem item in Items)
+            foreach (var item in Items)
+            {
                 ItemContainer.Controls.Add(item);
+            }
         }
 
-        void Item_SelectedChanged(Control sender)
+        private void Item_SelectedChanged(Control sender)
         {
-            ListBoxItem item = sender as ListBoxItem;
+            var item = sender as ListBoxItem;
 
-            if (skipEvents) return;
+            if (skipEvents)
+            {
+                return;
+            }
 
             if (item.Selected)
             {
                 if (Multiselect)
+                {
                     _selected.Add(item);
+                }
                 else
+                {
                     SelectedItem = item;
+                }
             }
             else
             {
                 if (Multiselect)
+                {
                     _selected.Remove(item);
+                }
                 else
+                {
                     SelectedItem = null;
+                }
             }
         }
 
-        void Items_BeforeItemsCleared(object sender, EventArgs e)
+        private void Items_BeforeItemsCleared(object sender, EventArgs e)
         {
             skipEvents = true;
-            foreach (ListBoxItem item in Items)
+            foreach (var item in Items)
             {
                 item.MouseClick -= item_MouseClick;
                 item.SelectedChanged -= Item_SelectedChanged;
@@ -333,11 +392,14 @@ namespace Squid
             ItemContainer.Controls.Clear();
         }
 
-        void item_MouseClick(Control sender, MouseEventArgs args)
+        private void item_MouseClick(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
-            ListBoxItem item = sender as ListBoxItem;
+            var item = sender as ListBoxItem;
 
             if (Multiselect)
             {
@@ -346,10 +408,14 @@ namespace Squid
                     if (!item.Selected)
                     {
                         if (_selected.Count < MaxSelected)
+                        {
                             item.Selected = true;
+                        }
                     }
                     else
+                    {
                         item.Selected = false;
+                    }
                 }
                 else
                 {
@@ -388,15 +454,20 @@ namespace Squid
         [DefaultValue(false)]
         public bool Selected
         {
-            get { return _selected; }
+            get => _selected;
             set
             {
-                if (value == _selected) return;
+                if (value == _selected)
+                {
+                    return;
+                }
 
                 _selected = value;
 
                 if (SelectedChanged != null)
+                {
                     SelectedChanged(this);
+                }
             }
         }
 

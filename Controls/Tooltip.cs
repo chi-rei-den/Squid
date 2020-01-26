@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Squid
+﻿namespace Squid
 {
     /// <summary>
     /// The Tooltip base class. Inherit this to create custom Tooltip controls.
@@ -42,7 +38,7 @@ namespace Squid
 
         public virtual void LayoutTooltip()
         {
-            Point p = Gui.MousePosition;
+            var p = Gui.MousePosition;
 
             switch (Alignment)
             {
@@ -77,16 +73,27 @@ namespace Squid
 
             p += Offset;
 
-            if (p.x < 0) p.x = 0;
-            if (p.y < 0) p.y = 0;
+            if (p.x < 0)
+            {
+                p.x = 0;
+            }
 
-            Point p2 = p + Size;
+            if (p.y < 0)
+            {
+                p.y = 0;
+            }
+
+            var p2 = p + Size;
 
             if (p2.x > Desktop.Size.x)
+            {
                 p.x = Desktop.Size.x - Size.x;
+            }
 
             if (p2.y > Desktop.Size.y)
+            {
                 p.y = Desktop.Size.y - Size.y;
+            }
 
             Position = p;
             PerformUpdate();

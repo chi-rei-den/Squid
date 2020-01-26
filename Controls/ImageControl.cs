@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Squid
 {
@@ -20,7 +17,7 @@ namespace Squid
         [Texture, Category("Image")]
         public string Texture
         {
-            get { return _texture; }
+            get => _texture;
             set { _texture = value; TextureRect = new Rectangle(0, 0, 0, 0); }
         }
 
@@ -70,22 +67,29 @@ namespace Squid
         {
             base.DrawStyle(style, opacity);
 
-            int texture = Gui.Renderer.GetTexture(Texture);
-            if (texture < 0) return;
+            var texture = Gui.Renderer.GetTexture(Texture);
+            if (texture < 0)
+            {
+                return;
+            }
 
-            if(ColorByTint)
+            if (ColorByTint)
+            {
                 Color = style.Tint;
+            }
 
-            int color = Color;
+            var color = Color;
 
-            if(Tint != -1)
+            if (Tint != -1)
+            {
                 color = ColorInt.Blend(Tint, color);
+            }
 
             color = ColorInt.FromArgb(opacity, color);
 
             if (TextureRect.IsEmpty())
             {
-                Point texsize = Gui.Renderer.GetTextureSize(texture);
+                var texsize = Gui.Renderer.GetTextureSize(texture);
                 TextureRect = new Rectangle(Point.Zero, texsize);
             }
 
@@ -104,9 +108,9 @@ namespace Squid
             }
             else if (Tiling == TextureMode.Center)
             {
-                Point center = Location + Size / 2;
-                Point rectsize = new Point(TextureRect.Width, TextureRect.Height);
-                Point pos = center - rectsize / 2;
+                var center = Location + Size / 2;
+                var rectsize = new Point(TextureRect.Width, TextureRect.Height);
+                var pos = center - rectsize / 2;
 
                 Gui.Renderer.DrawTexture(texture, pos.x, pos.y, rectsize.x, rectsize.y, TextureRect, color);
             }

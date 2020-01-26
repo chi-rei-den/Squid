@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Squid
+﻿namespace Squid
 {
     /// <summary>
     /// Simple text tooltip that fades in and out
@@ -33,7 +29,7 @@ namespace Squid
         /// <value>The delay.</value>
         public float Delay { get; set; }
 
-        protected Control Context { get { return _context; } }
+        protected Control Context => _context;
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleTooltip"/> class.
         /// </summary>
@@ -45,10 +41,12 @@ namespace Squid
             //AutoSize = AutoSize.HorizontalVertical;
 
             // lets just use a Label to display the tooltip as simple text
-            Label = new Label();
-            Label.BBCodeEnabled = true;
-            Label.AutoSize = AutoSize.HorizontalVertical;
-            Label.Style = "tooltip";
+            Label = new Label
+            {
+                BBCodeEnabled = true,
+                AutoSize = AutoSize.HorizontalVertical,
+                Style = "tooltip"
+            };
             Controls.Add(Label);
         }
 
@@ -101,56 +99,83 @@ namespace Squid
         private float rotation;
         private Rectangle clip;
 
-        void AlignTooltip()
+        private void AlignTooltip()
         {
-            if (_context == null) return;
+            if (_context == null)
+            {
+                return;
+            }
 
-            Point location = _context.Location;
+            var location = _context.Location;
             Point p;
 
             FinalAlign = Alignment.Inherit;
-            
+
             p = TryAlign(_context.TooltipAlign);
 
-            Rectangle oos = OutOfScreen(p, Size);
+            var oos = OutOfScreen(p, Size);
 
             if (oos.Left != 0 || oos.Right != 0 || oos.Top != 0 || oos.Bottom != 0)
             {
                 if (_context.TooltipAlign == Alignment.MiddleLeft)
                 {
                     if (oos.Top > 0)
+                    {
                         p.y += oos.Top;
+                    }
                     else if (oos.Bottom > 0)
+                    {
                         p.y -= oos.Bottom;
+                    }
                     else
+                    {
                         p = TryAlign(Alignment.MiddleRight);
+                    }
                 }
                 else if (_context.TooltipAlign == Alignment.MiddleRight)
                 {
                     if (oos.Top > 0)
+                    {
                         p.y += oos.Top;
+                    }
                     else if (oos.Bottom > 0)
+                    {
                         p.y -= oos.Bottom;
+                    }
                     else
+                    {
                         p = TryAlign(Alignment.MiddleLeft);
+                    }
                 }
                 else if (_context.TooltipAlign == Alignment.TopCenter)
                 {
                     if (oos.Left > 0)
+                    {
                         p.x += oos.Left;
-                    else if(oos.Right > 0)
+                    }
+                    else if (oos.Right > 0)
+                    {
                         p.x -= oos.Right;
+                    }
                     else
+                    {
                         p = TryAlign(Alignment.BottomCenter);
+                    }
                 }
                 else if (_context.TooltipAlign == Alignment.BottomCenter)
                 {
                     if (oos.Left > 0)
+                    {
                         p.x += oos.Left;
+                    }
                     else if (oos.Right > 0)
+                    {
                         p.x -= oos.Right;
+                    }
                     else
+                    {
                         p = TryAlign(Alignment.TopCenter);
+                    }
                 }
             }
 
@@ -159,21 +184,29 @@ namespace Squid
             PerformUpdate();
         }
 
-        Rectangle OutOfScreen(Point pos, Point size)
+        private Rectangle OutOfScreen(Point pos, Point size)
         {
-            Rectangle result = new Rectangle(0, 0, 0, 0);
+            var result = new Rectangle(0, 0, 0, 0);
 
             if (pos.x < 0)
+            {
                 result.Left = -pos.x;
+            }
 
             if (pos.y < 0)
+            {
                 result.Top = -pos.y;
+            }
 
             if (pos.x + size.x > Desktop.Size.x)
+            {
                 result.Right = (pos.x + size.x) - Desktop.Size.x;
+            }
 
             if (pos.y + size.y > Desktop.Size.y)
+            {
                 result.Bottom = (pos.y + size.y) - Desktop.Size.y;
+            }
 
             return result;
         }
@@ -181,9 +214,9 @@ namespace Squid
         private Point TryAlign(Alignment align)
         {
             FinalAlign = align;
-            Point loc = _context.Location;
-            Point csize = _context.Size;
-            Point p = loc;
+            var loc = _context.Location;
+            var csize = _context.Size;
+            var p = loc;
 
             switch (align)
             {
@@ -207,7 +240,10 @@ namespace Squid
         protected override void OnUpdate()
         {
             // increment timer if delay isnt reached
-            if (DelayTimer < Delay) DelayTimer += Gui.TimeElapsed;
+            if (DelayTimer < Delay)
+            {
+                DelayTimer += Gui.TimeElapsed;
+            }
 
             // if delay is reached
             if (DelayTimer >= Delay)

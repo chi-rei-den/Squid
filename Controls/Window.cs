@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 
 namespace Squid
@@ -46,13 +44,15 @@ namespace Squid
         [Category("Behavior")]
         public bool Resizable
         {
-            get { return Sizer.ParentControl == this; }
+            get => Sizer.ParentControl == this;
             set
             {
                 if (value)
                 {
                     if (Sizer.ParentControl != this)
+                    {
                         Elements.Add(Sizer);
+                    }
                 }
                 else
                 {
@@ -68,8 +68,8 @@ namespace Squid
         [Category("Behavior")]
         public Margin GripSize
         {
-            get { return Sizer.GripSize; }
-            set { Sizer.GripSize = value; }
+            get => Sizer.GripSize;
+            set => Sizer.GripSize = value;
         }
 
         /// <summary>
@@ -80,7 +80,9 @@ namespace Squid
             base.OnUpdate();
 
             if (IsDragging)
+            {
                 Drag();
+            }
         }
 
         /// <summary>
@@ -90,8 +92,10 @@ namespace Squid
         {
             Style = "window";
             Scissor = true;
-            Sizer = new Resizer();
-            Sizer.Dock = DockStyle.Fill;
+            Sizer = new Resizer
+            {
+                Dock = DockStyle.Fill
+            };
             SnapDistance = 12;
 
             MinSize = new Point(200, 100);
@@ -129,57 +133,102 @@ namespace Squid
 
         private void Drag()
         {
-            Point p = Gui.MousePosition - ClickedPos;
+            var p = Gui.MousePosition - ClickedPos;
 
             if (!Modal)
             {
-                foreach (Control win in Container.Controls)
+                foreach (var win in Container.Controls)
                 {
-                    if (!(win is Window)) continue;
-                    if (win == this) continue;
+                    if (!(win is Window))
+                    {
+                        continue;
+                    }
 
-                    int top = win.Position.y;
-                    int bottom = win.Position.y + win.Size.y;
-                    int left = win.Position.x;
-                    int right = win.Position.x + win.Size.x;
+                    if (win == this)
+                    {
+                        continue;
+                    }
+
+                    var top = win.Position.y;
+                    var bottom = win.Position.y + win.Size.y;
+                    var left = win.Position.x;
+                    var right = win.Position.x + win.Size.x;
 
                     if (Math.Abs(p.x - right) <= SnapDistance)
                     {
                         if (!(p.y + Size.y < top) && !(p.y > bottom))
+                        {
                             p.x = right;
+                        }
                     }
 
                     if (Math.Abs(p.x + Size.x - left) <= SnapDistance)
                     {
                         if (!(p.y + Size.y < top) && !(p.y > bottom))
+                        {
                             p.x = left - Size.x;
+                        }
                     }
 
                     if (Math.Abs(p.y - bottom) <= SnapDistance)
                     {
                         if (!(p.x + Size.x < left) && !(p.x > right))
+                        {
                             p.y = bottom;
+                        }
                     }
 
                     if (Math.Abs(p.y + Size.y - top) <= SnapDistance)
                     {
                         if (!(p.x + Size.x < left) && !(p.x > right))
+                        {
                             p.y = top - Size.y;
+                        }
                     }
                 }
             }
 
             if (!AllowDragOut)
             {
-                if (p.x < 0) p.x = 0;
-                if (p.y < 0) p.y = 0;
-                if (p.x + Size.x > Parent.Size.x) p.x = Parent.Size.x - Size.x;
-                if (p.y + Size.y > Parent.Size.y) p.y = Parent.Size.y - Size.y;
+                if (p.x < 0)
+                {
+                    p.x = 0;
+                }
 
-                if (p.x < SnapDistance) p.x = 0;
-                if (p.y < SnapDistance) p.y = 0;
-                if (p.x + Size.x > Parent.Size.x - SnapDistance) p.x = Parent.Size.x - Size.x;
-                if (p.y + Size.y > Parent.Size.y - SnapDistance) p.y = Parent.Size.y - Size.y;
+                if (p.y < 0)
+                {
+                    p.y = 0;
+                }
+
+                if (p.x + Size.x > Parent.Size.x)
+                {
+                    p.x = Parent.Size.x - Size.x;
+                }
+
+                if (p.y + Size.y > Parent.Size.y)
+                {
+                    p.y = Parent.Size.y - Size.y;
+                }
+
+                if (p.x < SnapDistance)
+                {
+                    p.x = 0;
+                }
+
+                if (p.y < SnapDistance)
+                {
+                    p.y = 0;
+                }
+
+                if (p.x + Size.x > Parent.Size.x - SnapDistance)
+                {
+                    p.x = Parent.Size.x - Size.x;
+                }
+
+                if (p.y + Size.y > Parent.Size.y - SnapDistance)
+                {
+                    p.y = Parent.Size.y - Size.y;
+                }
             }
 
             Position = p;
@@ -191,14 +240,19 @@ namespace Squid
         /// <param name="target">The target.</param>
         public virtual void Show(Desktop target)
         {
-            if (Parent == target) return;
+            if (Parent == target)
+            {
+                return;
+            }
 
             target.Controls.Add(this);
 
             SetDepth();
 
             if (Modal)
+            {
                 target.RegisterModal(this);
+            }
 
             Visible = true;
         }
@@ -208,10 +262,15 @@ namespace Squid
         /// </summary>
         public virtual void Close()
         {
-            if (Desktop == null) return;
+            if (Desktop == null)
+            {
+                return;
+            }
 
             if (Modal)
+            {
                 Desktop.UnregisterModal(this);
+            }
 
             Desktop.Controls.Remove(this);
 

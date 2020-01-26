@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.ComponentModel;
 
 namespace Squid
@@ -107,18 +106,25 @@ namespace Squid
         [Multiline]
         public string Text
         {
-            get { return _text; }
+            get => _text;
             set
             {
-                if (value == _originalText) return;
+                if (value == _originalText)
+                {
+                    return;
+                }
 
                 _originalText = value;
                 _text = value;
 
-                if(UseTranslation)
+                if (UseTranslation)
+                {
                     _text = TranslateText(_originalText);
+                }
                 else
+                {
                     _text = value;
+                }
 
                 IsDirty = true;
             }
@@ -130,12 +136,19 @@ namespace Squid
         {
             base.TranslationChanged(from, to);
 
-            if (string.IsNullOrEmpty(_originalText)) return;
+            if (string.IsNullOrEmpty(_originalText))
+            {
+                return;
+            }
 
             if (from == false && to == true)
+            {
                 _text = TranslateText(_originalText);
+            }
             else if (from == true && to == false)
+            {
                 _text = _originalText;
+            }
 
             IsDirty = true;
         }
@@ -154,12 +167,17 @@ namespace Squid
             MouseClick += Label_MouseClick;
         }
 
-        void Label_MouseClick(Control sender, MouseEventArgs args)
+        private void Label_MouseClick(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
             if (LinkClicked != null && ActiveHref != null)
+            {
                 LinkClicked(ActiveHref);
+            }
         }
 
         private Dictionary<string, bool> activeLibrary = new Dictionary<string, bool>();
@@ -170,40 +188,45 @@ namespace Squid
             activeLibrary.Clear();
             Lines.Clear();
 
-            TextElement def = new TextElement();
-            def.Font = style.Font;
+            var def = new TextElement
+            {
+                Font = style.Font
+            };
 
-            List<TextElement> elements = BBCode.Parse(_text, style, BBCodeEnabled);
-            List<TextElement> textElements = new List<TextElement>();
+            var elements = BBCode.Parse(_text, style, BBCodeEnabled);
+            var textElements = new List<TextElement>();
 
-            Point pos = new Point();
-            Point tsize = new Point();
-            int advx = 0;
+            var pos = new Point();
+            var tsize = new Point();
 
-            int lineHeight = 0;
-            List<TextElement> thisLine = new List<TextElement>();
+            var lineHeight = 0;
+            var thisLine = new List<TextElement>();
 
             TextSize = Point.Zero;
 
             if (TextWrap)
             {
                 #region TextWrap = true
-                bool firstInLine = true;
+                var firstInLine = true;
 
-                foreach (TextElement element in elements)
+                foreach (var element in elements)
                 {
-                    int font = Gui.Renderer.GetFont(element.Font);
+                    var font = Gui.Renderer.GetFont(element.Font);
 
                     if (element.Linebreak)
                     {
                         if (firstInLine)
+                        {
                             lineHeight = Gui.Renderer.GetTextSize(" ", font).y;
+                        }
 
                         pos.x = 0;
                         pos.y += lineHeight + Leading;
 
-                        foreach (TextElement el in thisLine)
+                        foreach (var el in thisLine)
+                        {
                             el.Position.y += lineHeight - el.Size.y;
+                        }
 
                         thisLine.Clear();
                         lineHeight = 0;
@@ -233,7 +256,9 @@ namespace Squid
                             ctrl.UserData = element.Control;
 
                             if (ctrl.Parent == null)
+                            {
                                 Elements.Add(ctrl);
+                            }
 
                             element.Size = ctrl.Size;
                             tsize = ctrl.Size;
@@ -249,8 +274,10 @@ namespace Squid
                                 pos.x = 0;
                                 pos.y += lineHeight + Leading;
 
-                                foreach (TextElement el in thisLine)
+                                foreach (var el in thisLine)
+                                {
                                     el.Position.y += lineHeight - el.Size.y;
+                                }
 
                                 thisLine.Clear();
 
@@ -271,26 +298,34 @@ namespace Squid
                     {
                         #region wrap
 
-                        string[] words = System.Text.RegularExpressions.Regex.Split(element.Text, @"(?=(?<=[^\s])\s+)");
+                        var words = System.Text.RegularExpressions.Regex.Split(element.Text, @"(?=(?<=[^\s])\s+)");
 
-                        List<TextElement> sub = new List<TextElement>();
+                        var sub = new List<TextElement>();
 
-                        TextElement e = new TextElement(element);
-                        e.Text = string.Empty;
-                        e.Position = pos;
-
-                        int c = 0;
-                        bool isBreak = false;
-
-                        foreach (string word in words)
+                        var e = new TextElement(element)
                         {
-                            if (word.Length == 0) continue;
+                            Text = string.Empty,
+                            Position = pos
+                        };
 
-                            string temp = word;
+                        var c = 0;
+                        var isBreak = false;
+
+                        foreach (var word in words)
+                        {
+                            if (word.Length == 0)
+                            {
+                                continue;
+                            }
+
+                            var temp = word;
 
                             // if this is the first word in a new line
                             // remove leading whitespaces
-                            if (firstInLine) temp = word.TrimStart();
+                            if (firstInLine)
+                            {
+                                temp = word.TrimStart();
+                            }
 
                             tsize = Gui.Renderer.GetTextSize(e.Text + temp, font);
                             lineHeight = Math.Max(lineHeight, tsize.y);
@@ -320,8 +355,10 @@ namespace Squid
                                     sub.Add(e);
                                     textElements.AddRange(sub);
 
-                                    foreach (TextElement el in thisLine)
+                                    foreach (var el in thisLine)
+                                    {
                                         el.Position.y += lineHeight - el.Size.y;
+                                    }
 
                                     sub.Clear();
                                     thisLine.Clear();
@@ -333,14 +370,18 @@ namespace Squid
                                     lineHeight = 0;
 
                                     // add a break
-                                    TextElement linebreak = new TextElement(e);
-                                    linebreak.Linebreak = true;
+                                    var linebreak = new TextElement(e)
+                                    {
+                                        Linebreak = true
+                                    };
                                     sub.Add(linebreak);
 
                                     // create new starting element
-                                    e = new TextElement(element);
-                                    e.Text = temp.TrimStart();
-                                    e.Position = pos;
+                                    e = new TextElement(element)
+                                    {
+                                        Text = temp.TrimStart(),
+                                        Position = pos
+                                    };
                                     e.Size = Gui.Renderer.GetTextSize(e.Text, font);
                                     lineHeight = Math.Max(lineHeight, e.Size.y);
                                     firstInLine = false;
@@ -421,8 +462,10 @@ namespace Squid
                     }
                 }
 
-                foreach (TextElement el in thisLine)
+                foreach (var el in thisLine)
+                {
                     el.Position.y += lineHeight - el.Size.y;
+                }
 
                 #endregion
             }
@@ -430,22 +473,24 @@ namespace Squid
             {
                 #region TextWrap = false
 
-                bool firstInLine = true;
-                bool singleLine = true;
+                var firstInLine = true;
+                var singleLine = true;
 
-                foreach (TextElement element in elements)
+                foreach (var element in elements)
                 {
-                    int font = Gui.Renderer.GetFont(element.Font);
+                    var font = Gui.Renderer.GetFont(element.Font);
 
                     if (element.Linebreak)
                     {
                         if (firstInLine)
+                        {
                             lineHeight = Gui.Renderer.GetTextSize(" ", font).y;
+                        }
 
                         pos.x = 0;
                         pos.y += lineHeight + Leading;
 
-                        foreach (TextElement el in thisLine)
+                        foreach (var el in thisLine)
                         {
                             el.Position.y += lineHeight - el.Size.y;
                             // el.Size.y += lineHeight - el.Size.y;
@@ -478,7 +523,9 @@ namespace Squid
                             ctrl.Position = pos;
 
                             if (ctrl.Parent == null)
+                            {
                                 Elements.Add(ctrl);
+                            }
 
                             activeLibrary.Add(element.Control, true);
 
@@ -515,8 +562,10 @@ namespace Squid
                     }
                 }
 
-                foreach (TextElement el in thisLine)
+                foreach (var el in thisLine)
+                {
                     el.Position.y += lineHeight - el.Size.y;
+                }
 
                 #endregion
 
@@ -524,18 +573,18 @@ namespace Squid
 
                 if (singleLine && AutoEllipsis && (AutoSize == Squid.AutoSize.None || AutoSize == AutoSize.Vertical))
                 {
-                    int removeAt = -1;
-                    int width = 0;
-                    int limit = Size.x - style.TextPadding.Left - style.TextPadding.Right;
+                    var removeAt = -1;
+                    var width = 0;
+                    var limit = Size.x - style.TextPadding.Left - style.TextPadding.Right;
 
-                    Alignment align = TextAlign != Alignment.Inherit ? TextAlign : style.TextAlign;
+                    var align = TextAlign != Alignment.Inherit ? TextAlign : style.TextAlign;
 
                     if (align == Alignment.TopLeft || align == Alignment.MiddleLeft || align == Alignment.BottomLeft)
                     {
-                        for (int i = 0; i < textElements.Count; i++)
+                        for (var i = 0; i < textElements.Count; i++)
                         {
-                            int font = Gui.Renderer.GetFont(textElements[i].Font);
-                            int ellipsis = Gui.Renderer.GetTextSize("...", font).x;
+                            var font = Gui.Renderer.GetFont(textElements[i].Font);
+                            var ellipsis = Gui.Renderer.GetTextSize("...", font).x;
 
                             if (width + textElements[i].Size.x + ellipsis <= limit)
                             {
@@ -544,15 +593,15 @@ namespace Squid
                             }
                             else
                             {
-                                string text = string.Empty;
-                                string final = string.Empty;
+                                var text = string.Empty;
+                                var final = string.Empty;
                                 removeAt = i + 1;
 
-                                foreach (char c in textElements[i].Text)
+                                foreach (var c in textElements[i].Text)
                                 {
                                     final = text + c + "...";
 
-                                    int w = Gui.Renderer.GetTextSize(final, font).x;
+                                    var w = Gui.Renderer.GetTextSize(final, font).x;
 
                                     if (width + w >= limit)
                                     {
@@ -570,17 +619,18 @@ namespace Squid
                         }
 
                         if (removeAt > -1)
+                        {
                             textElements.RemoveRange(removeAt, textElements.Count - removeAt);
-
+                        }
                     }
                     else if (align == Alignment.TopRight || align == Alignment.MiddleRight || align == Alignment.BottomRight)
                     {
-                        for (int i = textElements.Count - 1; i >= 0; i--)
+                        for (var i = textElements.Count - 1; i >= 0; i--)
                         {
-                            int font = Gui.Renderer.GetFont(textElements[i].Font);
-                            int ellipsis = Gui.Renderer.GetTextSize("...", font).x;
-                            int fullsize = textElements[i].Size.x;
-                            Point oldpos = textElements[i].Position;
+                            var font = Gui.Renderer.GetFont(textElements[i].Font);
+                            var ellipsis = Gui.Renderer.GetTextSize("...", font).x;
+                            var fullsize = textElements[i].Size.x;
+                            var oldpos = textElements[i].Position;
 
                             if (width + textElements[i].Size.x + ellipsis <= limit)
                             {
@@ -588,14 +638,14 @@ namespace Squid
                             }
                             else
                             {
-                                string inc = string.Empty;
-                                string final = string.Empty;
-                                string text = textElements[i].Text;
+                                var inc = string.Empty;
+                                var final = string.Empty;
+                                var text = textElements[i].Text;
                                 removeAt = i;
 
-                                for (int j = text.Length; j >= 0; j--)
+                                for (var j = text.Length; j >= 0; j--)
                                 {
-                                    char c = new char();
+                                    var c = new char();
 
                                     if (j < text.Length)
                                     {
@@ -609,17 +659,21 @@ namespace Squid
                                     }
 
                                     if (j == 0 && removeAt == 0)
+                                    {
                                         final = inc;
+                                    }
 
-                                    int w = Gui.Renderer.GetTextSize(final, font).x;
+                                    var w = Gui.Renderer.GetTextSize(final, font).x;
 
-                                    Point position = oldpos;
+                                    var position = oldpos;
                                     position.x = oldpos.x + (fullsize - w);
                                     textElements[i].Text = final;
                                     textElements[i].Position = position;
 
                                     if (width + w > limit && j > 0)
+                                    {
                                         break;
+                                    }
                                 }
 
                                 break;
@@ -628,15 +682,17 @@ namespace Squid
 
                         if (removeAt > 0)
                         {
-                            int ww = 0;
-                            for (int i = 0; i < removeAt; i++)
+                            var ww = 0;
+                            for (var i = 0; i < removeAt; i++)
+                            {
                                 ww += textElements[i].Size.x;
+                            }
 
                             textElements.RemoveRange(0, removeAt);
 
-                            for (int i = 0; i < textElements.Count; i++)
+                            for (var i = 0; i < textElements.Count; i++)
                             {
-                                Point position = textElements[i].Position;
+                                var position = textElements[i].Position;
                                 position.x -= ww;
                                 textElements[i].Position = position;
                             }
@@ -647,9 +703,9 @@ namespace Squid
                 #endregion
             }
 
-            TextLine line = new TextLine();
+            var line = new TextLine();
 
-            foreach (TextElement element in textElements)
+            foreach (var element in textElements)
             {
                 line.Width += element.Size.x;
                 line.Elements.Add(element);
@@ -673,10 +729,12 @@ namespace Squid
 
             FinalizeTextLayout(style);
 
-            foreach (KeyValuePair<string, Control> pair in library)
+            foreach (var pair in library)
             {
                 if (!activeLibrary.ContainsKey(pair.Key))
+                {
                     Elements.Remove(pair.Value);
+                }
             }
         }
 
@@ -689,39 +747,50 @@ namespace Squid
         {
             if (IsDirty)
             {
-                Style style = Desktop.GetStyle(Style).Styles[State];
+                var style = Desktop.GetStyle(Style).Styles[State];
                 UpdateText(style);
             }
 
             if (AutoSize == Squid.AutoSize.Vertical)
+            {
                 Size = new Point(Size.x, TextSize.y);
+            }
             else if (AutoSize == Squid.AutoSize.Horizontal)
+            {
                 Size = new Point(TextSize.x, Size.y);
+            }
             else if (AutoSize == Squid.AutoSize.HorizontalVertical)
+            {
                 Size = TextSize;
+            }
         }
 
         protected override void OnLateUpdate()
         {
             if (!IsDirty)
+            {
                 IsDirty = LastSize.x != Size.x || LastSize.y != Size.y;
+            }
 
             if (IsDirty)
             {
-                Style style = Desktop.GetStyle(Style).Styles[State];
+                var style = Desktop.GetStyle(Style).Styles[State];
                 UpdateText(style);
             }
 
             if (Desktop.HotControl == this)
             {
-                Point m = Gui.MousePosition;
+                var m = Gui.MousePosition;
                 ActiveHref = null;
 
-                foreach (TextLine line in Lines)
+                foreach (var line in Lines)
                 {
-                    foreach (TextElement element in line.Elements)
+                    foreach (var element in line.Elements)
                     {
-                        if (!element.IsLink) continue;
+                        if (!element.IsLink)
+                        {
+                            continue;
+                        }
 
                         if (element.Rectangle.Contains(m))
                         {
@@ -736,18 +805,24 @@ namespace Squid
 
         private void FinalizeTextLayout(Style style)
         {
-            if (Lines.Count == 0) return;
+            if (Lines.Count == 0)
+            {
+                return;
+            }
 
             int font;
             Point p1, p2, size;
 
-            Alignment align = TextAlign != Alignment.Inherit ? TextAlign : style.TextAlign;
+            var align = TextAlign != Alignment.Inherit ? TextAlign : style.TextAlign;
 
-            foreach (TextLine line in Lines)
+            foreach (var line in Lines)
             {
-                foreach (TextElement element in line.Elements)
+                foreach (var element in line.Elements)
                 {
-                    if (element.Linebreak) continue;
+                    if (element.Linebreak)
+                    {
+                        continue;
+                    }
 
                     font = Gui.Renderer.GetFont(element.Font);
 
@@ -755,22 +830,34 @@ namespace Squid
                     p1 = Point.Zero;
 
                     if (align == Alignment.TopLeft || align == Alignment.TopCenter || align == Alignment.TopRight)
+                    {
                         p1.y += style.TextPadding.Top;
+                    }
 
                     if (align == Alignment.BottomLeft || align == Alignment.BottomCenter || align == Alignment.BottomRight)
+                    {
                         p1.y += Size.y - TextSize.y;
+                    }
 
                     if (align == Alignment.MiddleLeft || align == Alignment.MiddleCenter || align == Alignment.MiddleRight)
+                    {
                         p1.y += (Size.y - (TextSize.y - (style.TextPadding.Top + style.TextPadding.Bottom))) / 2;
+                    }
 
                     if (align == Alignment.TopLeft || align == Alignment.MiddleLeft || align == Alignment.BottomLeft)
+                    {
                         p1.x += style.TextPadding.Left;
+                    }
 
                     if (align == Alignment.TopRight || align == Alignment.MiddleRight || align == Alignment.BottomRight)
+                    {
                         p1.x += Size.x - line.Width - style.TextPadding.Right;
+                    }
 
                     if (align == Alignment.TopCenter || align == Alignment.MiddleCenter || align == Alignment.BottomCenter)
+                    {
                         p1.x += (Size.x - line.Width) / 2;
+                    }
 
                     p2 = element.Position + p1;
 
@@ -782,7 +869,9 @@ namespace Squid
                         element.Position = p2;
 
                         if (library.ContainsKey(element.Control))
+                        {
                             library[element.Control].Position = p2;
+                        }
                     }
                 }
             }
@@ -797,16 +886,21 @@ namespace Squid
             }
 
             if (Lines.Count == 0)
+            {
                 return;
+            }
 
             int font;
-            Point p1, p2, size;
+            Point p2, size;
 
-            foreach (TextLine line in Lines)
+            foreach (var line in Lines)
             {
-                foreach (TextElement element in line.Elements)
+                foreach (var element in line.Elements)
                 {
-                    if (element.Linebreak) continue;
+                    if (element.Linebreak)
+                    {
+                        continue;
+                    }
 
                     font = Gui.Renderer.GetFont(element.Font);
                     size = element.Size;
@@ -815,21 +909,31 @@ namespace Squid
                     element.Rectangle = new Rectangle(p2, size);
 
                     if (!element.Rectangle.Intersects(ClipRect))
+                    {
                         continue;
+                    }
 
                     if (element.IsControl)
+                    {
                         continue;
+                    }
 
                     if (element.IsLink)
+                    {
                         Gui.Renderer.DrawBox(p2.x, p2.y + size.y, size.x - 1, 1, ColorInt.FromArgb(opacity, ColorInt.FromArgb(opacity, element.Color.HasValue ? (int)element.Color : style.TextColor)));
+                    }
 
                     //if (element.IsLink && element.Href == ActiveHref)
                     //    Gui.Renderer.DrawBox(p2.x, p2.y, size.x - 1, size.y, ColorInt.FromArgb(opacity, LinkColor));
 
                     if (UseTextColor)
+                    {
                         Gui.Renderer.DrawText(element.Text, p2.x, p2.y, font, ColorInt.FromArgb(opacity, TextColor));
+                    }
                     else
+                    {
                         Gui.Renderer.DrawText(element.Text, p2.x, p2.y, font, ColorInt.FromArgb(opacity, element.Color.HasValue ? (int)element.Color : style.TextColor));
+                    }
                 }
             }
         }

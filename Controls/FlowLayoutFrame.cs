@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Squid
 {
@@ -47,31 +45,34 @@ namespace Squid
             Controls.ItemsSorted += Controls_ItemsSorted;
         }
 
-        void Controls_ItemsSorted(object sender, EventArgs e)
+        private void Controls_ItemsSorted(object sender, EventArgs e)
         {
             Refresh();
         }
 
-        void Controls_ItemRemoved(object sender, ListEventArgs<Control> e)
+        private void Controls_ItemRemoved(object sender, ListEventArgs<Control> e)
         {
             Refresh();
         }
 
-        void Controls_ItemAdded(object sender, ListEventArgs<Control> e)
+        private void Controls_ItemAdded(object sender, ListEventArgs<Control> e)
         {
             Refresh();
         }
 
         private void LayoutLeftToRight()
         {
-            int x = HSpacing;
-            int y = VSpacing;
-            int max = 0;
-            int c = 0;
+            var x = HSpacing;
+            var y = VSpacing;
+            var max = 0;
+            var c = 0;
 
-            foreach (Control control in Controls)
+            foreach (var control in Controls)
             {
-                if (!control.Visible) continue;
+                if (!control.Visible)
+                {
+                    continue;
+                }
 
                 if (x + control.Size.x + HSpacing <= Size.x)
                 {
@@ -103,14 +104,17 @@ namespace Squid
 
         private void LayoutRightToLeft()
         {
-            int x = Size.x;
-            int y = HSpacing;
-            int max = 0;
-            int c = 0;
+            var x = Size.x;
+            var y = HSpacing;
+            var max = 0;
+            var c = 0;
 
-            foreach (Control control in Controls)
+            foreach (var control in Controls)
             {
-                if (!control.Visible) continue;
+                if (!control.Visible)
+                {
+                    continue;
+                }
 
                 if (x - control.Size.x - HSpacing >= HSpacing)
                 {
@@ -142,14 +146,17 @@ namespace Squid
 
         private void LayoutTopToBottom()
         {
-            int x = HSpacing;
-            int y = HSpacing;
-            int max = 0;
-            int c = 0;
+            var x = HSpacing;
+            var y = HSpacing;
+            var max = 0;
+            var c = 0;
 
-            foreach (Control control in Controls)
+            foreach (var control in Controls)
             {
-                if (!control.Visible) continue;
+                if (!control.Visible)
+                {
+                    continue;
+                }
 
                 if (y + control.Size.y + VSpacing <= Size.y)
                 {
@@ -181,14 +188,17 @@ namespace Squid
 
         private void LayoutBottomToTop()
         {
-            int x = HSpacing;
-            int y = Size.y;
-            int max = 0;
-            int c = 0;
+            var x = HSpacing;
+            var y = Size.y;
+            var max = 0;
+            var c = 0;
 
-            foreach (Control control in Controls)
+            foreach (var control in Controls)
             {
-                if (!control.Visible) continue;
+                if (!control.Visible)
+                {
+                    continue;
+                }
 
                 if (y - control.Size.y - VSpacing >= VSpacing)
                 {

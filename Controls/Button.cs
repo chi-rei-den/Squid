@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace Squid
 {
@@ -28,7 +27,7 @@ namespace Squid
         /// </summary>
         public event EventWithArgs BeforeCheckedChanged;
 
-       
+
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="Button"/> is checked.
         /// </summary>
@@ -36,22 +35,30 @@ namespace Squid
         [DefaultValue(false)]
         public bool Checked
         {
-            get { return _checked; }
+            get => _checked;
             set
             {
-                if (value == _checked) return;
+                if (value == _checked)
+                {
+                    return;
+                }
 
                 if (BeforeCheckedChanged != null)
                 {
-                    SquidEventArgs args = new SquidEventArgs();
+                    var args = new SquidEventArgs();
                     BeforeCheckedChanged(this, args);
-                    if (args.Cancel) return;
+                    if (args.Cancel)
+                    {
+                        return;
+                    }
                 }
 
                 _checked = value;
 
                 if (CheckedChanged != null)
+                {
                     CheckedChanged(this);
+                }
             }
         }
 
@@ -65,12 +72,17 @@ namespace Squid
             MouseClick += Button_MouseClick;
         }
 
-        void Button_MouseClick(Control sender, MouseEventArgs args)
+        private void Button_MouseClick(Control sender, MouseEventArgs args)
         {
-            if (args.Button > 0) return;
+            if (args.Button > 0)
+            {
+                return;
+            }
 
             if (CheckOnClick)
+            {
                 Checked = !Checked;
+            }
         }
     }
 }

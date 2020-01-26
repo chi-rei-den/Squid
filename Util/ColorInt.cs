@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Squid
 {
@@ -15,20 +13,18 @@ namespace Squid
         /// <returns>The blended colors.</returns>
         public static int Blend(int color1, int color2)
         {
-            int red1, green1, blue1, alpha1;
-            int red2, green2, blue2, alpha2;
 
-            FromArgb(color1, out alpha1, out red1, out green1, out blue1);
-            FromArgb(color2, out alpha2, out red2, out green2, out blue2);
+            FromArgb(color1, out var alpha1, out var red1, out var green1, out var blue1);
+            FromArgb(color2, out var alpha2, out var red2, out var green2, out var blue2);
 
-            double amount = (double)alpha1 / 255d;
+            var amount = alpha1 / 255d;
 
-            byte r = (byte)((red1 * amount) + red2 * (1 - amount));
-            byte g = (byte)((green1 * amount) + green2 * (1 - amount));
-            byte b = (byte)((blue1 * amount) + blue2 * (1 - amount));
-            byte a = (byte)alpha2;// (byte)((alpha1 * amount) + alpha2 * (1 - amount));
+            var r = (byte)((red1 * amount) + red2 * (1 - amount));
+            var g = (byte)((green1 * amount) + green2 * (1 - amount));
+            var b = (byte)((blue1 * amount) + blue2 * (1 - amount));
+            var a = (byte)alpha2;// (byte)((alpha1 * amount) + alpha2 * (1 - amount));
 
-            return ARGB((byte)a, r, g, b);
+            return ARGB(a, r, g, b);
         }
 
         /// <summary>
@@ -39,16 +35,14 @@ namespace Squid
         /// <returns>System.Int32.</returns>
         public static int Overlay(int color1, int color2)
         {
-            int red1, green1, blue1, alpha1;
-            int red2, green2, blue2, alpha2;
 
-            FromArgb(color1, out alpha1, out red1, out green1, out blue1);
-            FromArgb(color2, out alpha2, out red2, out green2, out blue2);
+            FromArgb(color1, out var alpha1, out var red1, out var green1, out var blue1);
+            FromArgb(color2, out var alpha2, out var red2, out var green2, out var blue2);
 
-            byte r = red1 > 127 ? (byte)(2 * red1 * red2 / 255) : (byte)(255 - 2 * (255 - red1) * (255 - red2));
-            byte g = red1 > 127 ? (byte)(2 * green1 * green2 / 255) : (byte)(255 - 2 * (255 - green1) * (255 - green2));
-            byte b = red1 > 127 ? (byte)(2 * blue1 * blue2 / 255) : (byte)(255 - 2 * (255 - blue1) * (255 - blue2));
-            byte a = red1 > 127 ? (byte)(2 * alpha1 * alpha2 / 255) : (byte)(255 - 2 * (255 - alpha1) * (255 - alpha2));
+            var r = red1 > 127 ? (byte)(2 * red1 * red2 / 255) : (byte)(255 - 2 * (255 - red1) * (255 - red2));
+            var g = red1 > 127 ? (byte)(2 * green1 * green2 / 255) : (byte)(255 - 2 * (255 - green1) * (255 - green2));
+            var b = red1 > 127 ? (byte)(2 * blue1 * blue2 / 255) : (byte)(255 - 2 * (255 - blue1) * (255 - blue2));
+            var a = red1 > 127 ? (byte)(2 * alpha1 * alpha2 / 255) : (byte)(255 - 2 * (255 - alpha1) * (255 - alpha2));
 
             return ARGB(a, r, g, b);
         }
@@ -61,16 +55,14 @@ namespace Squid
         /// <returns>System.Int32.</returns>
         public static int Multiply(int color1, int color2)
         {
-            int red1, green1, blue1, alpha1;
-            int red2, green2, blue2, alpha2;
 
-            FromArgb(color1, out alpha1, out red1, out green1, out blue1);
-            FromArgb(color2, out alpha2, out red2, out green2, out blue2);
+            FromArgb(color1, out var alpha1, out var red1, out var green1, out var blue1);
+            FromArgb(color2, out var alpha2, out var red2, out var green2, out var blue2);
 
-            byte r = (byte)(red1 * red2 / 255);
-            byte g = (byte)(green1 * green2 / 255);
-            byte b = (byte)(blue1 * blue2 / 255);
-            byte a = (byte)(alpha1 * alpha2 / 255);
+            var r = (byte)(red1 * red2 / 255);
+            var g = (byte)(green1 * green2 / 255);
+            var b = (byte)(blue1 * blue2 / 255);
+            var a = (byte)(alpha1 * alpha2 / 255);
 
             return ARGB(a, r, g, b);
         }
@@ -83,16 +75,14 @@ namespace Squid
         /// <returns>System.Int32.</returns>
         public static int Screen(int color1, int color2)
         {
-            int red1, green1, blue1, alpha1;
-            int red2, green2, blue2, alpha2;
 
-            FromArgb(color1, out alpha1, out red1, out green1, out blue1);
-            FromArgb(color2, out alpha2, out red2, out green2, out blue2);
+            FromArgb(color1, out var alpha1, out var red1, out var green1, out var blue1);
+            FromArgb(color2, out var alpha2, out var red2, out var green2, out var blue2);
 
-            byte r = (byte)(255 - (255 - red1) * (255 - red2));
-            byte g = (byte)(255 - (255 - green1) * (255 - green2));
-            byte b = (byte)(255 - (255 - blue1) * (255 - blue2));
-            byte a = (byte)(255 - (255 - alpha1) * (255 - alpha2));
+            var r = (byte)(255 - (255 - red1) * (255 - red2));
+            var g = (byte)(255 - (255 - green1) * (255 - green2));
+            var b = (byte)(255 - (255 - blue1) * (255 - blue2));
+            var a = (byte)(255 - (255 - alpha1) * (255 - alpha2));
 
             return ARGB(a, r, g, b);
         }
@@ -121,12 +111,12 @@ namespace Squid
         /// <returns>System.Int32.</returns>
         public static int FromArgb(float opacity, int argb)
         {
-            int alpha = (int)((argb >> 0x18) & 0xffL);
-            int red = (int)((argb >> 0x10) & 0xffL);
-            int green = (int)((argb >> 8) & 0xffL);
-            int blue = (int)(argb & 0xffL);
+            var alpha = (int)((argb >> 0x18) & 0xffL);
+            var red = (int)((argb >> 0x10) & 0xffL);
+            var green = (int)((argb >> 8) & 0xffL);
+            var blue = (int)(argb & 0xffL);
 
-            int newalpha = (int)((float)alpha * opacity);
+            var newalpha = (int)(alpha * opacity);
 
             return ARGB(newalpha, red, green, blue);
         }

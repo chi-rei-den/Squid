@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Squid
+﻿namespace Squid
 {
     /// <summary>
     /// A RadioButton
@@ -42,13 +38,15 @@ namespace Squid
         /// <value>The text.</value>
         public string Text
         {
-            get { return Label.Text; }
+            get => Label.Text;
             set
             {
                 _text = value;
 
                 if (Label != null)
+                {
                     Label.Text = value;
+                }
             }
         }
 
@@ -58,13 +56,15 @@ namespace Squid
         /// <value><c>true</c> if checked; otherwise, <c>false</c>.</value>
         public bool Checked
         {
-            get { return Button.Checked; }
+            get => Button.Checked;
             set
             {
                 _checked = value;
 
                 if (Button != null)
+                {
                     Button.Checked = value;
+                }
             }
         }
 
@@ -78,35 +78,39 @@ namespace Squid
 
             MouseClick += RadioButton_MouseClick;
 
-            Button = new Button();
-            Button.Dock = DockStyle.Left;
-            Button.Size = new Point(29, 30);
-            Button.CheckOnClick = true;
+            Button = new Button
+            {
+                Dock = DockStyle.Left,
+                Size = new Point(29, 30),
+                CheckOnClick = true
+            };
             Button.CheckedChanged += Button_CheckedChanged;
             Button.BeforeCheckedChanged += Button_BeforeCheckedChanged;
             Button.Style = "checkboxButton";
             Button.NoEvents = true;
             Elements.Add(Button);
 
-            Label = new Label();
-            Label.Dock = DockStyle.Fill;
-            Label.Style = "checkboxLabel";
-            Label.NoEvents = true;
+            Label = new Label
+            {
+                Dock = DockStyle.Fill,
+                Style = "checkboxLabel",
+                NoEvents = true
+            };
             Elements.Add(Label);
         }
 
-        void RadioButton_MouseClick(Control sender, MouseEventArgs args)
+        private void RadioButton_MouseClick(Control sender, MouseEventArgs args)
         {
             Button.Click(args.Button);
         }
 
-        void Button_BeforeCheckedChanged(Control sender, SquidEventArgs args)
+        private void Button_BeforeCheckedChanged(Control sender, SquidEventArgs args)
         {
             if (Button.Checked && Parent != null)
             {
-                bool valid = false;
+                var valid = false;
 
-                foreach (RadioButton btn in Parent.GetControls<RadioButton>())
+                foreach (var btn in Parent.GetControls<RadioButton>())
                 {
                     if (btn != this && btn.Group == Group)
                     {
@@ -118,7 +122,10 @@ namespace Squid
                     }
                 }
 
-                if (!valid) args.Cancel = true;
+                if (!valid)
+                {
+                    args.Cancel = true;
+                }
             }
         }
 
@@ -130,19 +137,23 @@ namespace Squid
             Label.State = State;
         }
 
-        void Button_CheckedChanged(Control sender)
+        private void Button_CheckedChanged(Control sender)
         {
             if (Button.Checked && Parent != null)
             {
-                foreach (RadioButton btn in Parent.GetControls<RadioButton>())
+                foreach (var btn in Parent.GetControls<RadioButton>())
                 {
                     if (btn != this && btn.Group == Group)
+                    {
                         btn.Checked = false;
+                    }
                 }
             }
 
             if (CheckedChanged != null)
+            {
                 CheckedChanged(this);
+            }
         }
     }
 }

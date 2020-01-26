@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Squid
 {
@@ -9,8 +7,8 @@ namespace Squid
         internal Control _control;
         internal GuiActionList _list;
 
-        protected GuiActionList Actions { get { return _list; } }
-        protected Control Control { get { return _control; } }
+        protected GuiActionList Actions => _list;
+        protected Control Control => _control;
 
         public event VoidEvent Finished;
         public event VoidEvent Started;
@@ -22,7 +20,7 @@ namespace Squid
         protected bool _isFinished;
         public bool IsFinished
         {
-            get { return _isFinished; }
+            get => _isFinished;
             protected set
             {
                 _isFinished = value;
@@ -32,7 +30,9 @@ namespace Squid
                     End();
 
                     if (Finished != null)
+                    {
                         Finished(_control);
+                    }
                 }
             }
         }
@@ -47,13 +47,17 @@ namespace Squid
                 Start();
 
                 if (Started != null)
+                {
                     Started(_control);
+                }
             }
 
             Update(dt);
 
             if (Updated != null)
+            {
                 Updated(_control);
+            }
         }
 
         public virtual void Start() { }
@@ -69,8 +73,8 @@ namespace Squid
         private Control owner;
         private List<GuiAction> Actions = new List<GuiAction>();
 
-        public GuiAction First { get { return Actions.Count > 0 ? Actions[0] : null; } }
-        public GuiAction Last { get { return Actions.Count > 0 ? Actions[Actions.Count - 1] : null; } }
+        public GuiAction First => Actions.Count > 0 ? Actions[0] : null;
+        public GuiAction Last => Actions.Count > 0 ? Actions[Actions.Count - 1] : null;
 
         public GuiActionList(Control owner)
         {
@@ -114,12 +118,12 @@ namespace Squid
             IsUpdating = true;
 
             index = 0;
-            int i = index;
+            var i = index;
             //int lanes = 0;
 
             while (i < Actions.Count)
             {
-                GuiAction action = Actions[i];
+                var action = Actions[i];
 
                 //if ((lanes & action.Lanes) == 0)
                 //    continue;
@@ -139,7 +143,9 @@ namespace Squid
                 index = i;
 
                 if (action.IsBlocking)
+                {
                     break;
+                }
             }
 
             IsUpdating = false;

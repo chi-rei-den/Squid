@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using System;
 using System.Text.RegularExpressions;
 
 namespace Squid.Xml
@@ -24,7 +22,7 @@ namespace Squid.Xml
         private int idx = 0;
         private XmlNodeType _nodeType;
 
-        public XmlNodeType NodeType { get { return _nodeType; } }
+        public XmlNodeType NodeType => _nodeType;
         public bool HasAttributes { get; private set; }
 
         private List<XmlAttribute> Attributes = new List<XmlAttribute>();
@@ -50,18 +48,20 @@ namespace Squid.Xml
             Attributes.Clear();
             HasAttributes = false;
         }
-    
+
         public string Name = "";
         public string Value = "";
 
         // properly looks for the next index of _c, without stopping at line endings, allowing tags to be break lines   
-        int IndexOf(char _c, int _i)
+        private int IndexOf(char _c, int _i)
         {
-            int i = _i;
+            var i = _i;
             while (i < xmlString.Length)
             {
                 if (xmlString[i] == _c)
+                {
                     return i;
+                }
 
                 ++i;
             }
@@ -69,22 +69,18 @@ namespace Squid.Xml
             return -1;
         }
 
-        public bool EOF
-        {
-            get { return idx < 0; }
-        }
+        public bool EOF => idx < 0;
 
-        public bool IsEmptyElement
-        {
-            get { return _isEmptyElement; }
-        }
+        public bool IsEmptyElement => _isEmptyElement;
 
         public string GetAttribute(string name)
         {
-            foreach (XmlAttribute att in Attributes)
+            foreach (var att in Attributes)
             {
                 if (att.Name.Equals(name))
+                {
                     return att.Value;
+                }
             }
 
             return string.Empty;
@@ -105,10 +101,12 @@ namespace Squid.Xml
 
         public bool Read()
         {
-            int newindex = idx;
+            var newindex = idx;
 
             if (idx > -1)
-               newindex = xmlString.IndexOf("<", idx);
+            {
+                newindex = xmlString.IndexOf("<", idx);
+            }
 
             Name = string.Empty;
             Value = string.Empty;
@@ -121,7 +119,10 @@ namespace Squid.Xml
             {
                 if (newindex == -1)
                 {
-                    if (idx > 0) idx++;
+                    if (idx > 0)
+                    {
+                        idx++;
+                    }
 
                     Value = xmlString.Substring(idx, xmlString.Length - idx);
                     _nodeType = XmlNodeType.Text;
@@ -130,7 +131,10 @@ namespace Squid.Xml
                 }
                 else
                 {
-                    if (idx > 0) idx++;
+                    if (idx > 0)
+                    {
+                        idx++;
+                    }
 
                     Value = xmlString.Substring(idx, newindex - idx);
                     _nodeType = XmlNodeType.Text;
@@ -140,13 +144,15 @@ namespace Squid.Xml
             }
 
             if (idx == -1)
+            {
                 return false;
-            
+            }
+
             ++idx;
 
             // skip attributes, don't include them in the name!
-            int endOfTag = IndexOf('>', idx);
-            int endOfName = IndexOf(' ', idx);
+            var endOfTag = IndexOf('>', idx);
+            var endOfName = IndexOf(' ', idx);
             if ((endOfName == -1) || (endOfTag < endOfName))
             {
                 endOfName = endOfTag;
@@ -168,7 +174,7 @@ namespace Squid.Xml
                 _nodeType = XmlNodeType.EndElement;
                 Name = Name.Remove(0, 1); // remove the slash
             }
-            else if(Name.EndsWith("/"))
+            else if (Name.EndsWith("/"))
             {
                 _isEmptyElement = true;
                 _nodeType = XmlNodeType.Element;
@@ -176,16 +182,16 @@ namespace Squid.Xml
             }
             else
             {
-                string temp = xmlString.Substring(endOfName, endOfTag - endOfName);
+                var temp = xmlString.Substring(endOfName, endOfTag - endOfName);
 
-                Regex r = new Regex("([a-z0-9]+)=(\"(.*?)\")");
+                var r = new Regex("([a-z0-9]+)=(\"(.*?)\")");
 
                 foreach (Match m in r.Matches(temp))
                 {
-                    string name = m.Value.Substring(0, m.Value.IndexOf("="));
-                    int i0 = m.Value.IndexOf("\"") + 1;
-                    int i1 = m.Value.LastIndexOf("\"");
-                    string val = m.Value.Substring(i0, i1 - i0);
+                    var name = m.Value.Substring(0, m.Value.IndexOf("="));
+                    var i0 = m.Value.IndexOf("\"") + 1;
+                    var i1 = m.Value.LastIndexOf("\"");
+                    var val = m.Value.Substring(i0, i1 - i0);
 
                     Attributes.Add(new XmlAttribute { Name = name, Value = val });
                 }
@@ -194,10 +200,10 @@ namespace Squid.Xml
 
                 foreach (Match m in r.Matches(temp))
                 {
-                    string name = m.Value.Substring(0, m.Value.IndexOf("="));
-                    int i0 = m.Value.IndexOf("'") + 1;
-                    int i1 = m.Value.LastIndexOf("'");
-                    string val = m.Value.Substring(i0, i1 - i0);
+                    var name = m.Value.Substring(0, m.Value.IndexOf("="));
+                    var i0 = m.Value.IndexOf("'") + 1;
+                    var i1 = m.Value.LastIndexOf("'");
+                    var val = m.Value.Substring(i0, i1 - i0);
 
                     Attributes.Add(new XmlAttribute { Name = name, Value = val });
                 }

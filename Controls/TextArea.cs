@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 namespace Squid
 {
@@ -25,7 +24,7 @@ namespace Squid
         // private int Col;
         private int Caret = 0;
 
-        private bool IsSelection { get { return _selectStart != _selectEnd; } }
+        private bool IsSelection => _selectStart != _selectEnd;
         private int _selectStart = 0;
         private int _selectEnd = 0;
 
@@ -110,10 +109,13 @@ namespace Squid
         [Multiline]
         public string Text
         {
-            get { return _text.Replace("\n","\r\n"); }
+            get => _text.Replace("\n", "\r\n");
             set
             {
-                if (_text == value) return;
+                if (_text == value)
+                {
+                    return;
+                }
 
                 _text = value.Replace("\r\n", "\n");
                 //_text = value;
@@ -125,7 +127,9 @@ namespace Squid
                 _selectEnd = 0;
 
                 if (TextChanged != null)
+                {
                     TextChanged(this);
+                }
             }
         }
 
@@ -136,7 +140,9 @@ namespace Squid
 
             IsDirty = true;
             if (TextChanged != null)
+            {
                 TextChanged(this);
+            }
         }
 
         /// <summary>
@@ -144,20 +150,14 @@ namespace Squid
         /// </summary>
         /// <value>The selection start.</value>
         [Xml.XmlIgnore]
-        public int SelectionStart
-        {
-            get { return Math.Min(_selectStart, _selectEnd); }
-        }
+        public int SelectionStart => Math.Min(_selectStart, _selectEnd);
 
         /// <summary>
         /// Gets the selection end.
         /// </summary>
         /// <value>The selection end.</value>
         [Xml.XmlIgnore]
-        public int SelectionEnd
-        {
-            get { return Math.Max(_selectStart, _selectEnd); }
-        }
+        public int SelectionEnd => Math.Max(_selectStart, _selectEnd);
 
         /// <summary>
         /// Gets the cursor.
@@ -201,10 +201,13 @@ namespace Squid
             {
                 if (IsSelection)
                 {
-                    if (_text == null || _text.Length == 0) return string.Empty;
+                    if (_text == null || _text.Length == 0)
+                    {
+                        return string.Empty;
+                    }
 
-                    int start = SelectionStart;
-                    int end = SelectionEnd;
+                    var start = SelectionStart;
+                    var end = SelectionEnd;
 
                     return _text.Substring(start, end - start);
                 }
@@ -257,44 +260,50 @@ namespace Squid
             base.OnUpdate();
         }
 
-        void TextBox_GotFocus(Control sender)
+        private void TextBox_GotFocus(Control sender)
         {
             SavedText = _text;
             HasFocus = true;
         }
 
-        void TextBox_LostFocus(Control sender)
+        private void TextBox_LostFocus(Control sender)
         {
             HasFocus = false;
 
             if (TextCommit != null)
+            {
                 TextCommit(this, null);
+            }
         }
 
-        void TextBox_MouseDoubleClick(Control sender, MouseEventArgs args)
+        private void TextBox_MouseDoubleClick(Control sender, MouseEventArgs args)
         {
         }
 
-        void TextBox_MousePress(Control sender, MouseEventArgs args)
+        private void TextBox_MousePress(Control sender, MouseEventArgs args)
         {
-            Point m = Gui.MousePosition;
-            int total = 0;
+            var m = Gui.MousePosition;
+            var total = 0;
             Rectangle rect;
 
-            foreach (TextLine line in Lines)
+            foreach (var line in Lines)
             {
-                for (int i = 0; i < line.Elements.Count; i++)
+                for (var i = 0; i < line.Elements.Count; i++)
                 {
-                    bool firstElement = i == 0;
-                    bool lastElement = i == line.Elements.Count - 1;
+                    var firstElement = i == 0;
+                    var lastElement = i == line.Elements.Count - 1;
 
                     rect = line.Elements[i].Rectangle;
 
                     if (firstElement)
+                    {
                         rect.Left = Location.x;
+                    }
 
                     if (lastElement)
+                    {
                         rect.Right = Location.x + Size.x;
+                    }
 
                     if (lastElement && line.Elements[i].Linebreak)
                     {
@@ -304,18 +313,20 @@ namespace Squid
 
                     if (rect.Contains(m))
                     {
-                        Point p = new Point(line.Elements[i].Rectangle.Left, line.Elements[i].Rectangle.Top);
-                        Point mb = m - p;
-                        int font = Gui.Renderer.GetFont(line.Elements[i].Font);
-                        int off = 0;
-                        int c = 0;
+                        var p = new Point(line.Elements[i].Rectangle.Left, line.Elements[i].Rectangle.Top);
+                        var mb = m - p;
+                        var font = Gui.Renderer.GetFont(line.Elements[i].Font);
+                        var off = 0;
+                        var c = 0;
 
                         while (c < line.Elements[i].Text.Length)
                         {
                             off = Gui.Renderer.GetTextSize(line.Elements[i].Text.Substring(0, c), font).x;
 
                             if (off > mb.x)
+                            {
                                 break;
+                            }
 
                             c++;
                         }
@@ -325,33 +336,41 @@ namespace Squid
                     }
 
                     if (line.Elements[i].Linebreak)
+                    {
                         total++;
+                    }
                     else
+                    {
                         total += line.Elements[i].Text.Length;
+                    }
                 }
             }
         }
 
-        void TextBox_MouseDown(Control sender, MouseEventArgs args)
+        private void TextBox_MouseDown(Control sender, MouseEventArgs args)
         {
-            Point m = Gui.MousePosition;
-            int total = 0;
+            var m = Gui.MousePosition;
+            var total = 0;
             Rectangle rect;
 
-            foreach (TextLine line in Lines)
+            foreach (var line in Lines)
             {
-                for (int i = 0; i < line.Elements.Count; i++)
+                for (var i = 0; i < line.Elements.Count; i++)
                 {
-                    bool firstElement = i == 0;
-                    bool lastElement = i == line.Elements.Count - 1;
+                    var firstElement = i == 0;
+                    var lastElement = i == line.Elements.Count - 1;
 
                     rect = line.Elements[i].Rectangle;
 
                     if (firstElement)
+                    {
                         rect.Left = Location.x;
+                    }
 
                     if (lastElement)
+                    {
                         rect.Right = Location.x + Size.x;
+                    }
 
                     if (lastElement && line.Elements[i].Linebreak)
                     {
@@ -361,18 +380,20 @@ namespace Squid
 
                     if (rect.Contains(m))
                     {
-                        Point p = new Point(line.Elements[i].Rectangle.Left, line.Elements[i].Rectangle.Top);
-                        Point mb = m - p;
-                        int font = Gui.Renderer.GetFont(line.Elements[i].Font);
-                        int off = 0;
-                        int c = 0;
+                        var p = new Point(line.Elements[i].Rectangle.Left, line.Elements[i].Rectangle.Top);
+                        var mb = m - p;
+                        var font = Gui.Renderer.GetFont(line.Elements[i].Font);
+                        var off = 0;
+                        var c = 0;
 
                         while (c < line.Elements[i].Text.Length)
                         {
                             off = Gui.Renderer.GetTextSize(line.Elements[i].Text.Substring(0, c), font).x;
 
                             if (off > mb.x)
+                            {
                                 break;
+                            }
 
                             c++;
                         }
@@ -382,36 +403,50 @@ namespace Squid
                     }
 
                     if (line.Elements[i].Linebreak)
+                    {
                         total++;
+                    }
                     else
+                    {
                         total += line.Elements[i].Text.Length;
+                    }
                 }
             }
         }
 
         private int FindIndexLeft(int start, string text)
         {
-            if (start <= 0) return start;
+            if (start <= 0)
+            {
+                return start;
+            }
 
             while (true)
             {
                 start--;
 
                 if (char.IsWhiteSpace(text, start) || char.IsPunctuation(text, start) || start <= 0)
+                {
                     return start;
+                }
             }
         }
 
         private int FindIndexRight(int start, string text)
         {
-            if (start >= text.Length - 1) return start;
+            if (start >= text.Length - 1)
+            {
+                return start;
+            }
 
             while (true)
             {
                 start++;
 
                 if (char.IsWhiteSpace(text, start) || char.IsPunctuation(text, start) || start >= text.Length - 1)
+                {
                     return start + 1;
+                }
             }
         }
 
@@ -422,7 +457,7 @@ namespace Squid
 
             if (Gui.CtrlPressed)
             {
-                string masked = _text;
+                var masked = _text;
 
                 if (Gui.ShiftPressed)
                 {
@@ -432,7 +467,7 @@ namespace Squid
                     }
                     else if (_selectEnd == Caret)
                     {
-                        int index = FindIndexLeft(_selectEnd, masked);
+                        var index = FindIndexLeft(_selectEnd, masked);
 
                         if (index < _selectStart)
                         {
@@ -441,7 +476,9 @@ namespace Squid
                             Caret = index;
                         }
                         else
+                        {
                             Caret = _selectEnd = index;
+                        }
                     }
                 }
                 else
@@ -456,9 +493,14 @@ namespace Squid
                     if (Gui.ShiftPressed)
                     {
                         if (_selectStart == Caret)
+                        {
                             _selectStart--;
+                        }
                         else if (_selectEnd == Caret)
+                        {
                             _selectEnd--;
+                        }
+
                         Caret--;
                     }
                     else
@@ -492,13 +534,13 @@ namespace Squid
                 {
                     if (_selectEnd == Caret)
                     {
-                        int index = FindIndexRight(_selectEnd, _text);
+                        var index = FindIndexRight(_selectEnd, _text);
 
                         Caret = _selectEnd = index;
                     }
                     else if (_selectStart == Caret)
                     {
-                        int index = FindIndexRight(_selectStart, _text);
+                        var index = FindIndexRight(_selectStart, _text);
                         if (index > _selectEnd)
                         {
                             _selectStart = _selectEnd;
@@ -506,7 +548,9 @@ namespace Squid
                             Caret = index;
                         }
                         else
+                        {
                             Caret = _selectStart = index;
+                        }
                     }
                 }
                 else
@@ -521,9 +565,13 @@ namespace Squid
                     if (Gui.ShiftPressed)
                     {
                         if (_selectEnd == Caret)
+                        {
                             _selectEnd++;
+                        }
                         else if (_selectStart == Caret)
+                        {
                             _selectStart++;
+                        }
 
                         Caret++;
                     }
@@ -549,53 +597,63 @@ namespace Squid
 
         private void HandleUpArrow()
         {
-            int textlength = 0;
-            int lastline = 0;
+            var textlength = 0;
+            var lastline = 0;
 
             if (Gui.ShiftPressed)
             {
                 if (!IsSelection)
+                {
                     _selectStart = Caret;
+                }
             }
             else
             {
                 _selectStart = _selectEnd = 0;
             }
 
-            for (int i = 0; i < Lines.Count; i++)
+            for (var i = 0; i < Lines.Count; i++)
             {
-                TextLine line = Lines[i];
+                var line = Lines[i];
 
                 if (textlength + line.CharLength > Caret)
                 {
-                    int left = Caret - textlength;
+                    var left = Caret - textlength;
 
                     if (i > 0 && left > -1)
                     {
-                        int lastlen = Lines[i - 1].CharLength;
+                        var lastlen = Lines[i - 1].CharLength;
                         Caret = textlength + Math.Min(lastlen - 1, left) - lastlen;
 
                         if (Gui.ShiftPressed)
+                        {
                             _selectEnd = Caret;
+                        }
 
                         break;
                     }
                 }
                 else if (textlength + line.CharLength == Caret)
                 {
-                    int left = 0;
+                    var left = 0;
 
                     if (i > 0 && left > -1)
                     {
-                        int lastlen = Lines[i - 1].CharLength;
+                        var lastlen = Lines[i - 1].CharLength;
 
                         if (i == Lines.Count - 1)
+                        {
                             Caret = lastline + Math.Min(lastlen - 1, line.CharLength);
+                        }
                         else
+                        {
                             Caret = textlength + Math.Min(lastlen - 1, left);
+                        }
 
                         if (Gui.ShiftPressed)
+                        {
                             _selectEnd = Caret;
+                        }
 
                         break;
                     }
@@ -608,42 +666,52 @@ namespace Squid
 
         private void HandleDownArrow()
         {
-            int total = 0;
+            var total = 0;
 
             if (Gui.ShiftPressed)
             {
                 if (!IsSelection)
+                {
                     _selectStart = Caret;
+                }
             }
             else
             {
                 _selectStart = _selectEnd = 0;
             }
 
-            for (int i = 0; i < Lines.Count; i++)
+            for (var i = 0; i < Lines.Count; i++)
             {
-                TextLine line = Lines[i];
+                var line = Lines[i];
 
                 if (total + line.CharLength > Caret)
                 {
-                    int left = Caret - total;
+                    var left = Caret - total;
 
                     if (Lines.Count > i + 1)
                     {
-                        int nextlen = Lines[i + 1].CharLength;
+                        var nextlen = Lines[i + 1].CharLength;
 
                         if (total + line.CharLength == Caret + 1 && i + 1 != Lines.Count - 1)
                         {
                             if (left == 0 && line.CharLength == 1)
+                            {
                                 Caret = total + line.CharLength + Math.Min(nextlen, left);
+                            }
                             else
+                            {
                                 Caret = total + line.CharLength - 1 + Math.Min(nextlen, left);
+                            }
                         }
                         else
+                        {
                             Caret = total + line.CharLength + Math.Min(nextlen, left);
+                        }
 
                         if (Gui.ShiftPressed)
+                        {
                             _selectEnd = Caret;
+                        }
 
                         break;
                     }
@@ -655,8 +723,11 @@ namespace Squid
 
         protected override void OnKeyDown(KeyEventArgs args)
         {
-            Desktop root = Desktop;
-            if (root == null) return;
+            var root = Desktop;
+            if (root == null)
+            {
+                return;
+            }
 
             BlinkTime = 0; DoBlink = 1;
 
@@ -677,7 +748,9 @@ namespace Squid
                             Caret = 0;
                         }
                         else
+                        {
                             Caret = _selectEnd = 0;
+                        }
                     }
                 }
                 else
@@ -703,7 +776,9 @@ namespace Squid
                             Caret = _text.Length;
                         }
                         else
+                        {
                             Caret = _selectStart = _text.Length;
+                        }
                     }
                 }
                 else
@@ -740,8 +815,8 @@ namespace Squid
 
                 if (IsSelection)
                 {
-                    int start = SelectionStart;
-                    int end = SelectionEnd;
+                    var start = SelectionStart;
+                    var end = SelectionEnd;
 
                     SetText(_text.Remove(start, end - start));
                     Caret = start;
@@ -751,7 +826,10 @@ namespace Squid
                     if (Caret > 0)
                     {
                         SetText(_text.Remove(Caret - 1, 1));
-                        if (Caret > 0) Caret--;
+                        if (Caret > 0)
+                        {
+                            Caret--;
+                        }
                     }
                 }
 
@@ -764,8 +842,8 @@ namespace Squid
 
                 if (IsSelection)
                 {
-                    int start = SelectionStart;
-                    int end = SelectionEnd;
+                    var start = SelectionStart;
+                    var end = SelectionEnd;
 
                     SetText(_text.Remove(start, end - start));
                     Caret = start;
@@ -773,7 +851,9 @@ namespace Squid
                 else
                 {
                     if (_text.Length > Caret)
+                    {
                         SetText(_text.Remove(Caret, 1));
+                    }
                 }
 
                 _selectStart = _selectEnd = Caret;
@@ -795,7 +875,9 @@ namespace Squid
                 LostFocus += TextBox_LostFocus;
 
                 if (TextCancel != null)
+                {
                     TextCancel(this, null);
+                }
             }
             else
             {
@@ -810,8 +892,9 @@ namespace Squid
                     else if (args.Key == Keys.C) // copy
                     {
                         if (IsSelection)
+                        {
                             Gui.SetClipboard(Selection.Replace("\n", "\r\n"));
-
+                        }
                     }
                     else if (args.Key == Keys.X) // copy
                     {
@@ -819,8 +902,8 @@ namespace Squid
                         {
                             Gui.SetClipboard(Selection);
 
-                            int start = SelectionStart;
-                            int end = SelectionEnd;
+                            var start = SelectionStart;
+                            var end = SelectionEnd;
 
                             SetText(_text.Remove(start, end - start));
                             //Caret = start;
@@ -829,13 +912,13 @@ namespace Squid
                     }
                     else if (args.Key == Keys.V && !ReadOnly) // pasteb
                     {
-                        string paste = Gui.GetClipboard().Replace("\r\n","\n");
+                        var paste = Gui.GetClipboard().Replace("\r\n", "\n");
                         if (!string.IsNullOrEmpty(paste))
                         {
                             if (IsSelection)
                             {
-                                int start = SelectionStart;
-                                int end = SelectionEnd;
+                                var start = SelectionStart;
+                                var end = SelectionEnd;
 
                                 SetText(_text.Remove(start, end - start));
                                 Caret = start;
@@ -844,7 +927,9 @@ namespace Squid
                             SetText(_text.Insert(Caret, paste.ToString()));
 
                             if (Caret < _text.Length)
+                            {
                                 Caret += paste.Length;
+                            }
 
                             _selectStart = _selectEnd = Caret;
                         }
@@ -856,15 +941,15 @@ namespace Squid
                     {
                         if (args.Char.HasValue)
                         {
-                            bool valid = true;
-                            char c = args.Char.Value;
+                            var valid = true;
+                            var c = args.Char.Value;
 
                             if (valid)
                             {
                                 if (IsSelection)
                                 {
-                                    int start = SelectionStart;
-                                    int end = SelectionEnd;
+                                    var start = SelectionStart;
+                                    var end = SelectionEnd;
 
                                     SetText(_text.Remove(start, end - start));
                                     Caret = start;
@@ -872,7 +957,9 @@ namespace Squid
 
                                 SetText(_text.Insert(Caret, c.ToString()));
                                 if (Caret < _text.Length)
+                                {
                                     Caret++;
+                                }
 
                                 _selectStart = _selectEnd = Caret;
                             }
@@ -886,28 +973,33 @@ namespace Squid
         {
             Lines.Clear();
 
-            if (string.IsNullOrEmpty(_text)) return;
+            if (string.IsNullOrEmpty(_text))
+            {
+                return;
+            }
 
-            TextElement def = new TextElement();
-            def.Font = style.Font;
+            var def = new TextElement
+            {
+                Font = style.Font
+            };
 
-            List<TextElement> elements = BBCode.Parse(_text, style, false);
-            List<TextElement> textElements = new List<TextElement>();
+            var elements = BBCode.Parse(_text, style, false);
+            var textElements = new List<TextElement>();
 
-            Point pos = new Point();
-            Point tsize = new Point();
+            var pos = new Point();
+            var tsize = new Point();
 
-            int lineHeight = 0;
-            List<TextElement> thisLine = new List<TextElement>();
+            var lineHeight = 0;
+            var thisLine = new List<TextElement>();
 
             TextSize = Point.Zero;
 
             if (TextWrap)
             {
                 #region TextWrap = true
-                foreach (TextElement element in elements)
+                foreach (var element in elements)
                 {
-                    int font = Gui.Renderer.GetFont(element.Font);
+                    var font = Gui.Renderer.GetFont(element.Font);
 
                     if (element.Linebreak)
                     {
@@ -917,10 +1009,12 @@ namespace Squid
                         element.Position = pos;
                         element.Size = Gui.Renderer.GetTextSize(" ", font);
 
-                        foreach (TextElement el in thisLine)
+                        foreach (var el in thisLine)
                         {
                             if (!el.Linebreak)
+                            {
                                 el.Position.y += lineHeight - el.Size.y;
+                            }
                         }
 
                         thisLine.Clear();
@@ -931,25 +1025,30 @@ namespace Squid
                     {
                         #region wrap
 
-                        string[] words = element.Text.Split(' ');
+                        var words = element.Text.Split(' ');
 
-                        List<TextElement> sub = new List<TextElement>();
+                        var sub = new List<TextElement>();
 
-                        TextElement e = new TextElement(element);
-                        e.Text = string.Empty;
-                        e.Position = pos;
+                        var e = new TextElement(element)
+                        {
+                            Text = string.Empty,
+                            Position = pos
+                        };
                         sub.Add(e);
 
-                        int i = 0;
+                        var i = 0;
 
-                        foreach (string word in words)
+                        foreach (var word in words)
                         {
-                            string temp = word;
-                            if (i > 0) temp = " " + word;
+                            var temp = word;
+                            if (i > 0)
+                            {
+                                temp = " " + word;
+                            }
 
                             tsize = Gui.Renderer.GetTextSize(temp, font);
                             lineHeight = Math.Max(lineHeight, tsize.y);
-                            int limit = Size.x - (style.TextPadding.Left + style.TextPadding.Right);
+                            var limit = Size.x - (style.TextPadding.Left + style.TextPadding.Right);
 
                             i++;
 
@@ -974,24 +1073,30 @@ namespace Squid
                                     pos.y += lineHeight + Leading;
                                     thisLine.Add(e);
 
-                                    foreach (TextElement el in thisLine)
+                                    foreach (var el in thisLine)
                                     {
                                         if (!el.Linebreak)
+                                        {
                                             el.Position.y += lineHeight - el.Size.y;
+                                        }
                                     }
 
                                     thisLine.Clear();
                                     lineHeight = 0;
 
-                                    TextElement linebreak = new TextElement(e);
-                                    linebreak.Text = string.Empty;
-                                    linebreak.Linebreak = true;
-                                    linebreak.Position = pos;
+                                    var linebreak = new TextElement(e)
+                                    {
+                                        Text = string.Empty,
+                                        Linebreak = true,
+                                        Position = pos
+                                    };
                                     sub.Add(linebreak);
 
-                                    e = new TextElement(element);
-                                    e.Text = word;
-                                    e.Position = pos;
+                                    e = new TextElement(element)
+                                    {
+                                        Text = word,
+                                        Position = pos
+                                    };
                                     e.Size = Gui.Renderer.GetTextSize(e.Text, font);
                                     sub.Add(e);
 
@@ -1008,18 +1113,20 @@ namespace Squid
                     }
                 }
 
-                foreach (TextElement el in thisLine)
+                foreach (var el in thisLine)
                 {
                     if (!el.Linebreak)
+                    {
                         el.Position.y += lineHeight - el.Size.y;
+                    }
                 }
                 #endregion
             }
             else
             {
-                foreach (TextElement element in elements)
+                foreach (var element in elements)
                 {
-                    int font = Gui.Renderer.GetFont(element.Font);
+                    var font = Gui.Renderer.GetFont(element.Font);
 
                     if (element.Linebreak)
                     {
@@ -1029,10 +1136,12 @@ namespace Squid
                         element.Position = pos;
                         element.Size = Gui.Renderer.GetTextSize(" ", font);
 
-                        foreach (TextElement el in thisLine)
+                        foreach (var el in thisLine)
                         {
                             if (!el.Linebreak)
+                            {
                                 el.Position.y += lineHeight - el.Size.y;
+                            }
                         }
 
                         thisLine.Clear();
@@ -1059,17 +1168,19 @@ namespace Squid
                     }
                 }
 
-                foreach (TextElement el in thisLine)
+                foreach (var el in thisLine)
                 {
                     if (!el.Linebreak)
+                    {
                         el.Position.y += lineHeight - el.Size.y;
+                    }
                 }
 
             }
 
-            TextLine line = new TextLine();
+            var line = new TextLine();
 
-            foreach (TextElement element in textElements)
+            foreach (var element in textElements)
             {
                 if (element.Linebreak)
                 {
@@ -1127,7 +1238,7 @@ namespace Squid
 
         protected override void OnStateChanged()
         {
-            Style style = Desktop.GetStyle(Style).Styles[State];
+            var style = Desktop.GetStyle(Style).Styles[State];
             UpdateText(style);
         }
 
@@ -1135,39 +1246,50 @@ namespace Squid
         {
             if (IsDirty)
             {
-                Style style = Desktop.GetStyle(Style).Styles[State];
+                var style = Desktop.GetStyle(Style).Styles[State];
                 UpdateText(style);
             }
 
             if (AutoSize == Squid.AutoSize.Vertical)
+            {
                 Size = new Point(Size.x, TextSize.y);
+            }
             else if (AutoSize == Squid.AutoSize.Horizontal)
+            {
                 Size = new Point(TextSize.x, Size.y);
+            }
             else if (AutoSize == Squid.AutoSize.HorizontalVertical)
+            {
                 Size = TextSize;
+            }
         }
 
         protected override void OnLateUpdate()
         {
             if (!IsDirty)
+            {
                 IsDirty = LastSize.x != Size.x || LastSize.y != Size.y;
+            }
 
             if (IsDirty)
             {
-                Style style = Desktop.GetStyle(Style).Styles[State];
+                var style = Desktop.GetStyle(Style).Styles[State];
                 UpdateText(style);
             }
 
             if (Desktop.HotControl == this)
             {
-                Point m = Gui.MousePosition;
+                var m = Gui.MousePosition;
                 ActiveHref = null;
 
-                foreach (TextLine line in Lines)
+                foreach (var line in Lines)
                 {
-                    foreach (TextElement element in line.Elements)
+                    foreach (var element in line.Elements)
                     {
-                        if (!element.IsLink) continue;
+                        if (!element.IsLink)
+                        {
+                            continue;
+                        }
 
                         if (element.Rectangle.Contains(m))
                         {
@@ -1181,14 +1303,17 @@ namespace Squid
 
         protected override void DrawText(Style style, float opacity)
         {
-            if (IsDirty) UpdateText(style);
+            if (IsDirty)
+            {
+                UpdateText(style);
+            }
 
             int font;
-            int total = 0;
-            int numLine = 0;
+            var total = 0;
+            var numLine = 0;
             Point p1, p2, size;
-            Alignment align = TextAlign != Alignment.Inherit ? TextAlign : style.TextAlign;
-            bool drawCaret = HasFocus && DoBlink > 0;
+            var align = TextAlign != Alignment.Inherit ? TextAlign : style.TextAlign;
+            var drawCaret = HasFocus && DoBlink > 0;
 
             if (Lines.Count == 0)
             {
@@ -1198,24 +1323,36 @@ namespace Squid
                     font = Gui.Renderer.GetFont(style.Font);
 
                     if (align == Alignment.TopLeft || align == Alignment.TopCenter || align == Alignment.TopRight)
+                    {
                         p1.y += style.TextPadding.Top;
+                    }
 
                     if (align == Alignment.BottomLeft || align == Alignment.BottomCenter || align == Alignment.BottomRight)
+                    {
                         p1.y += Size.y - TextSize.y;
+                    }
 
                     if (align == Alignment.MiddleLeft || align == Alignment.MiddleCenter || align == Alignment.MiddleRight)
+                    {
                         p1.y += (Size.y - (TextSize.y - (style.TextPadding.Top + style.TextPadding.Bottom))) / 2;
+                    }
 
                     if (align == Alignment.TopLeft || align == Alignment.MiddleLeft || align == Alignment.BottomLeft)
+                    {
                         p1.x += style.TextPadding.Left;
+                    }
 
                     if (align == Alignment.TopRight || align == Alignment.MiddleRight || align == Alignment.BottomRight)
+                    {
                         p1.x += Size.x - style.TextPadding.Right;
+                    }
 
                     if (align == Alignment.TopCenter || align == Alignment.MiddleCenter || align == Alignment.BottomCenter)
+                    {
                         p1.x += Size.x / 2;
+                    }
 
-                    Point subsize = Gui.Renderer.GetTextSize(" ", font);
+                    var subsize = Gui.Renderer.GetTextSize(" ", font);
                     Gui.Renderer.DrawBox(p1.x, p1.y, 2, subsize.y, ColorInt.FromArgb(opacity, BlinkColor));
 
                 }
@@ -1223,11 +1360,11 @@ namespace Squid
                 return;
             }
 
-            foreach (TextLine line in Lines)
+            foreach (var line in Lines)
             {
-                int perline = 0;
+                var perline = 0;
 
-                foreach (TextElement element in line.Elements)
+                foreach (var element in line.Elements)
                 {
                     //if (element.Linebreak)
                     //    continue;
@@ -1235,37 +1372,55 @@ namespace Squid
                     font = Gui.Renderer.GetFont(element.Font);
 
                     if (element.Linebreak)
+                    {
                         total++;
+                    }
                     else
+                    {
                         total += element.Text.Length;
+                    }
 
                     size = element.Size;
                     p1 = Location;
 
                     if (align == Alignment.TopLeft || align == Alignment.TopCenter || align == Alignment.TopRight)
+                    {
                         p1.y += style.TextPadding.Top;
+                    }
 
                     if (align == Alignment.BottomLeft || align == Alignment.BottomCenter || align == Alignment.BottomRight)
+                    {
                         p1.y += Size.y - TextSize.y;
+                    }
 
                     if (align == Alignment.MiddleLeft || align == Alignment.MiddleCenter || align == Alignment.MiddleRight)
+                    {
                         p1.y += (Size.y - (TextSize.y - (style.TextPadding.Top + style.TextPadding.Bottom))) / 2;
+                    }
 
                     if (align == Alignment.TopLeft || align == Alignment.MiddleLeft || align == Alignment.BottomLeft)
+                    {
                         p1.x += style.TextPadding.Left;
+                    }
 
                     if (align == Alignment.TopRight || align == Alignment.MiddleRight || align == Alignment.BottomRight)
+                    {
                         p1.x += Size.x - line.Width - style.TextPadding.Right;
+                    }
 
                     if (align == Alignment.TopCenter || align == Alignment.MiddleCenter || align == Alignment.BottomCenter)
+                    {
                         p1.x += (Size.x - line.Width) / 2;
+                    }
 
                     p2 = element.Position + p1;
 
                     element.Rectangle = new Rectangle(p2, size);
 
                     if (element.IsLink && element.Href == ActiveHref)
+                    {
                         Gui.Renderer.DrawBox(p2.x, p2.y, size.x - 1, size.y, ColorInt.FromArgb(opacity, LinkColor));
+                    }
 
                     if (drawCaret && total >= Caret)
                     {
@@ -1273,38 +1428,42 @@ namespace Squid
 
                         if (string.IsNullOrEmpty(element.Text))
                         {
-                            Point subsize = Gui.Renderer.GetTextSize(" ", font);
+                            var subsize = Gui.Renderer.GetTextSize(" ", font);
                             Gui.Renderer.DrawBox(p2.x, p2.y, 2, subsize.y, ColorInt.FromArgb(opacity, BlinkColor));
                         }
                         else
                         {
-                            string substr = element.Text.Substring(0, element.Text.Length - (total - Caret));
+                            var substr = element.Text.Substring(0, element.Text.Length - (total - Caret));
 
                             if (string.IsNullOrEmpty(substr))
                             {
-                                Point subsize = Gui.Renderer.GetTextSize(" ", font);
+                                var subsize = Gui.Renderer.GetTextSize(" ", font);
                                 Gui.Renderer.DrawBox(p2.x, p2.y, 2, subsize.y, ColorInt.FromArgb(opacity, BlinkColor));
                             }
                             else
                             {
-                                Point subsize = Gui.Renderer.GetTextSize(substr, font);
+                                var subsize = Gui.Renderer.GetTextSize(substr, font);
                                 Gui.Renderer.DrawBox(p2.x + subsize.x, p2.y, 2, subsize.y, ColorInt.FromArgb(opacity, BlinkColor));
                             }
                         }
                     }
 
                     if (UseTextColor)
+                    {
                         Gui.Renderer.DrawText(element.Text, p2.x, p2.y, font, ColorInt.FromArgb(opacity, TextColor));
+                    }
                     else
+                    {
                         Gui.Renderer.DrawText(element.Text, p2.x, p2.y, font, ColorInt.FromArgb(opacity, element.Color.HasValue ? (int)element.Color : style.TextColor));
+                    }
 
                     //    Gui.Renderer.DrawBox(element.Rectangle.Left, element.Rectangle.Top, element.Rectangle.Width, element.Rectangle.Height, -1);
 
                     if (IsSelection && total >= SelectionStart && perline < SelectionEnd && !element.Linebreak)
                     {
-                        int start = SelectionStart;
-                        int end = SelectionEnd;
-                        int color = ColorInt.FromArgb(0.5f, -1);
+                        var start = SelectionStart;
+                        var end = SelectionEnd;
+                        var color = ColorInt.FromArgb(0.5f, -1);
 
                         //int origin = perline - element.Text.Length;
                         //start = Math.Max(0, origin - start);
@@ -1316,28 +1475,45 @@ namespace Squid
                         //}
                         //else
                         //{
-                        int begin = element.Text.Length - (total - start);
-                        if (begin < 0) begin = 0;
+                        var begin = element.Text.Length - (total - start);
+                        if (begin < 0)
+                        {
+                            begin = 0;
+                        }
 
-                        int len = element.Text.Length - begin - (total - end);
-                        if (len < 0) len = 0;
-                        if (len > element.Text.Length) len = element.Text.Length;
-                        if (begin + len > element.Text.Length) len = element.Text.Length - begin;
+                        var len = element.Text.Length - begin - (total - end);
+                        if (len < 0)
+                        {
+                            len = 0;
+                        }
 
-                        string strOffset = element.Text.Substring(0, begin);
-                        string strSelected = element.Text.Substring(begin, len);
+                        if (len > element.Text.Length)
+                        {
+                            len = element.Text.Length;
+                        }
 
-                        Point offset = Gui.Renderer.GetTextSize(strOffset, font);
-                        Point selection = Gui.Renderer.GetTextSize(strSelected, font);
+                        if (begin + len > element.Text.Length)
+                        {
+                            len = element.Text.Length - begin;
+                        }
+
+                        var strOffset = element.Text.Substring(0, begin);
+                        var strSelected = element.Text.Substring(begin, len);
+
+                        var offset = Gui.Renderer.GetTextSize(strOffset, font);
+                        var selection = Gui.Renderer.GetTextSize(strSelected, font);
                         Gui.Renderer.DrawBox(p2.x + offset.x, p2.y, selection.x, selection.y, ColorInt.FromArgb(opacity, SelectionColor));
                         //}
                     }
 
                     if (!string.IsNullOrEmpty(element.Text))
+                    {
                         perline += element.Text.Length;
+                    }
                     else
+                    {
                         perline++;
-
+                    }
                 }
 
                 numLine++;

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Squid.Xml;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
+using Squid.Xml;
 
 namespace Squid
 {
@@ -180,7 +178,7 @@ namespace Squid
             return Texture != other.Texture
                     || !TextureRect.Equals(other.TextureRect)
                     || Tiling != other.Tiling
-                    || Tint != other.Tint 
+                    || Tint != other.Tint
                     || BackColor != other.BackColor;
         }
 

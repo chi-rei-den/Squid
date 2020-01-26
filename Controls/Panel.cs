@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Squid
 {
@@ -21,13 +19,13 @@ namespace Squid
         /// </summary>
         /// <value>The clip frame.</value>
         public Frame ClipFrame { get; private set; }
-        
+
         /// <summary>
         /// Gets the H scroll.
         /// </summary>
         /// <value>The H scroll.</value>
         public ScrollBar HScroll { get; private set; }
-        
+
         /// <summary>
         /// Gets the V scroll.
         /// </summary>
@@ -43,37 +41,49 @@ namespace Squid
         {
             Size = new Point(100, 100);
 
-            VScroll = new ScrollBar();
-            VScroll.Dock = DockStyle.Right;
-            VScroll.Size = new Point(25, 25);
+            VScroll = new ScrollBar
+            {
+                Dock = DockStyle.Right,
+                Size = new Point(25, 25)
+            };
             Elements.Add(VScroll);
 
-            HScroll = new ScrollBar();
-            HScroll.Dock = DockStyle.Bottom;
-            HScroll.Size = new Point(25, 25);
-            HScroll.Orientation = Orientation.Horizontal;
+            HScroll = new ScrollBar
+            {
+                Dock = DockStyle.Bottom,
+                Size = new Point(25, 25),
+                Orientation = Orientation.Horizontal
+            };
             Elements.Add(HScroll);
 
-            ClipFrame = new Frame();
-            ClipFrame.Dock = DockStyle.Fill;
-            ClipFrame.Scissor = true;
+            ClipFrame = new Frame
+            {
+                Dock = DockStyle.Fill,
+                Scissor = true
+            };
             Elements.Add(ClipFrame);
 
-            Content = new Frame();
-            Content.AutoSize = AutoSize.Vertical;
+            Content = new Frame
+            {
+                AutoSize = AutoSize.Vertical
+            };
             ClipFrame.Controls.Add(Content);
 
             MouseWheel += Panel_MouseWheel;
         }
 
-        void Panel_MouseWheel(Control sender, MouseEventArgs args)
+        private void Panel_MouseWheel(Control sender, MouseEventArgs args)
         {
             // scroll
 
             if (UseWheelForHScroll)
+            {
                 HScroll.Scroll(Gui.MouseScroll);
+            }
             else
+            {
                 VScroll.Scroll(Gui.MouseScroll);
+            }
 
             // consume the mouse event
             args.Cancel = true;
@@ -83,13 +93,17 @@ namespace Squid
         {
             base.OnUpdate();
 
-            Point position = Point.Zero;
+            var position = Point.Zero;
 
             if (Content.Size.x < ClipFrame.Size.x || Content.AutoSize == Squid.AutoSize.Vertical)
+            {
                 Content.Size = new Point(ClipFrame.Size.x, Content.Size.y);
+            }
 
             if (Content.Size.y < ClipFrame.Size.y || Content.AutoSize == Squid.AutoSize.Horizontal)
+            {
                 Content.Size = new Point(Content.Size.x, ClipFrame.Size.y);
+            }
 
             if (!VScroll.ShowAlways && Content.Size.y <= ClipFrame.Size.y)
             {
@@ -98,14 +112,18 @@ namespace Squid
             else
             {
                 VScroll.Visible = true;
-                VScroll.Scale = Math.Min(1, (float)ClipFrame.Size.y / (float)Content.Size.y);
+                VScroll.Scale = Math.Min(1, ClipFrame.Size.y / (float)Content.Size.y);
                 position.y = (int)((ClipFrame.Size.y - Content.Size.y) * VScroll.EasedValue);
 
                 //hack
                 if (VScroll.ShowAlways)
+                {
                     VScroll.Slider.Visible = VScroll.Scale < 1;
+                }
                 else
+                {
                     VScroll.Slider.Visible = true;
+                }
             }
 
             if (!HScroll.ShowAlways && Content.Size.x <= ClipFrame.Size.x)
@@ -115,7 +133,7 @@ namespace Squid
             else
             {
                 HScroll.Visible = true;
-                HScroll.Scale = Math.Min(1, (float)ClipFrame.Size.x / (float)Content.Size.x);
+                HScroll.Scale = Math.Min(1, ClipFrame.Size.x / (float)Content.Size.x);
                 position.x = (int)((ClipFrame.Size.x - Content.Size.x) * HScroll.EasedValue);
             }
 

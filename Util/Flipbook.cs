@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Squid
+﻿namespace Squid
 {
     /// <summary>
     /// Helper class to manage a sprite sheet animation.
@@ -21,20 +17,23 @@ namespace Squid
 
         public void Draw(int texture, int x, int y, int width, int height, int color)
         {
-            if (texture < 0) return;
+            if (texture < 0)
+            {
+                return;
+            }
 
             Timer += Gui.TimeElapsed;
-            
+
             if (Timer >= Speed)
             {
                 Timer = 0;
                 Advance();
             }
 
-            Point size = Gui.Renderer.GetTextureSize(texture);
-            
-            int w = (int)((float)size.x / (float)Columns);
-            int h = (int)((float)size.y / (float)Rows);
+            var size = Gui.Renderer.GetTextureSize(texture);
+
+            var w = (int)(size.x / (float)Columns);
+            var h = (int)(size.y / (float)Rows);
 
             rect.Left = w * col;
             rect.Right = (w * (col + 1));
@@ -60,7 +59,9 @@ namespace Squid
                         row++;
 
                         if (row >= Rows)
+                        {
                             row = 0;
+                        }
                     }
                 }
             }
